@@ -1,0 +1,63 @@
+/**
+ * AKZ - Custom Overrides (theme-aware)
+ */
+
+/* PBX Menu Font Size */
+#nav ul li a {
+    font-size: 12px;
+}
+
+/* AKZ - Topbar notification icons (theme-aware) */
+.neo-topbar-notification > li {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 3px;
+}
+
+.neo-topbar-notification > li > a {
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50%;
+    background: var(--akzfa-topbar-icon-bg) !important;
+    border: 1px solid var(--akzfa-border) !important;
+    color: var(--akzfa-topbar-icon) !important;
+    transition: all 0.2s ease;
+}
+
+.neo-topbar-notification > li > a:hover {
+    background: var(--akzfa-primary) !important;
+    border-color: var(--akzfa-primary) !important;
+    color: #fff !important;
+    transform: scale(1.08);
+}
+
+/* Icons centered */
+.neo-topbar-notification > li > a i,
+.neo-topbar-notification > li > a img {
+    font-size: 15px;
+    color: inherit !important;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
+
+/* Remove pulse animation from queue icon */
+.top-bar-queue a i.fa-pulse,
+#queue_dashboard_link i.fa-pulse {
+    animation: none !important;
+    -webkit-animation: none !important;
+}
+
+/* Vertical spacing */
+.neo-topbar-notification {
+    padding: 10px 0 14px 0 !important;
+}
+
+/* Hidden popup init */
+.neo-modal-issabel-popup-box {
+    display: none;
+}

@@ -1,0 +1,158 @@
+/* Scoped layouts for PBX configuration, contacts, hardware and provisioning. */
+html body.akzfa-pbx { direction: rtl; text-align: right; font-family: Vazirmatn, Tahoma, sans-serif; font-size: 14px; line-height: 1.8; }
+html body.akzfa-pbx *, html body.akzfa-pbx *::before, html body.akzfa-pbx *::after { box-sizing: border-box; }
+html body.akzfa-pbx :is(#page, #page_body, .content) { width: 100%; min-width: 0; max-width: 100%; margin: 0; }
+html body.akzfa-pbx #header { position: sticky !important; inset: 0 0 auto; min-width: 0; width: 100%; z-index: 1000; }
+html body.akzfa-pbx #header .navbar { position: relative; inset: auto; min-width: 0; padding: 6px 12px; border-bottom: 1px solid var(--akzfa-border); }
+html body.akzfa-pbx :is(.navbar, .navbar-menu, .navbar-dropdown) { background: var(--akzfa-surface-2) !important; color: var(--akzfa-text) !important; box-shadow: none; }
+html body.akzfa-pbx :is(.navbar-start, .navbar-end, .navbar-brand) { align-items: center; gap: 4px; }
+html body.akzfa-pbx .navbar-start { margin-right: 0; margin-left: auto; }
+html body.akzfa-pbx .navbar-end { margin-left: 0; margin-right: auto; }
+html body.akzfa-pbx :is(.navbar-item, .navbar-link) { font: inherit; color: var(--akzfa-text) !important; text-align: right; white-space: nowrap; }
+html body.akzfa-pbx button.navbar-item { border: 0; background: transparent; }
+html body.akzfa-pbx .navbar-link { padding: 10px 12px 10px 32px; border-radius: 8px; }
+html body.akzfa-pbx .navbar-link::after { right: auto; left: 12px; border-color: var(--akzfa-muted); }
+html body.akzfa-pbx .navbar-dropdown {
+  right: 0; left: auto; min-width: 230px; width: max-content; max-width: min(600px, calc(100vw - 32px));
+  max-height: min(520px, 70vh); overflow: auto; padding: 8px; border: 1px solid var(--akzfa-border); border-radius: 10px; text-align: right;
+}
+html body.akzfa-pbx .navbar-dropdown.multicolumn { column-count: 2; column-gap: 12px; }
+html body.akzfa-pbx .navbar-dropdown .navbar-item { display: block; padding: 9px 12px; white-space: normal; border-radius: 6px; break-inside: avoid; }
+html body.akzfa-pbx .navbar-dropdown :is(.scroll-container, .scroll) { width: auto; height: auto; margin: 0; overflow: visible; white-space: normal; }
+html body.akzfa-pbx .navbar :is(.navbar-link:hover, .navbar-link:focus, .navbar-item:hover, .navbar-item:focus, .navbar-item.is-active),
+html body.akzfa-pbx .navbar-item.has-dropdown:hover > .navbar-link { background: var(--akzfa-primary-soft) !important; color: var(--akzfa-primary-text) !important; }
+html body.akzfa-pbx #menusearch { width: 190px; max-width: 100%; }
+html body.akzfa-pbx #page_body { padding: 20px; }
+html body.akzfa-pbx :is(h1, h2, h3, h4, h5, h6, legend, .label) { color: var(--akzfa-heading) !important; text-align: start; font-family: inherit; }
+html body.akzfa-pbx :is(.box, .infobox, .ui-widget-content, .ui-widget-header, #tab-content, .moduleheader, .moduleinfopane) {
+  background: var(--akzfa-surface) !important; background-image: none !important; color: var(--akzfa-text) !important; border-color: var(--akzfa-border) !important;
+}
+html body.akzfa-pbx :is(.infobox, .box) { padding: 16px; border: 1px solid var(--akzfa-border); border-radius: 10px; box-shadow: none; }
+html body.akzfa-pbx :is(.ui-widget-header, h5, .h5) { background: var(--akzfa-surface-2) !important; padding: 10px 14px; border-radius: 8px; box-shadow: none; }
+html body.akzfa-pbx :is(.content table, table.box, .alt_table) { max-width: 100%; border-color: var(--akzfa-border); background: var(--akzfa-surface); }
+html body.akzfa-pbx :is(.content table, table.box, .alt_table) :is(td, th) { padding: 10px 12px; color: var(--akzfa-text); text-align: start; vertical-align: middle; border-color: var(--akzfa-border); }
+html body.akzfa-pbx :is(.alt_table tr:nth-child(even), .table.is-striped tbody tr:not(.is-selected):nth-child(2n)) { background: var(--akzfa-surface-2); }
+html body.akzfa-pbx .akzfa-pbx-table-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; margin-bottom: 16px; }
+html body.akzfa-pbx .akzfa-pbx-table-scroll > table { min-width: 100%; width: max-content; table-layout: auto; }
+html body.akzfa-pbx .rnav { float: left; left: auto; right: auto; max-width: 280px; width: 26%; margin: 0 20px 16px 0; }
+html body.akzfa-pbx .rnav :is(ul, a) { max-width: 100%; background: var(--akzfa-surface-2); color: var(--akzfa-text); border-color: var(--akzfa-border); }
+html body.akzfa-pbx .rnav a { padding: 8px 12px; white-space: normal; overflow-wrap: anywhere; }
+html body.akzfa-pbx .field { min-width: 0; margin-bottom: 18px; }
+html body.akzfa-pbx .field-label { text-align: right; margin-right: 0; margin-left: 20px; flex-shrink: 0; }
+html body.akzfa-pbx :is(.field-body, .control, .column) { min-width: 0; }
+html body.akzfa-pbx .columns { margin-inline: 0; gap: 8px; }
+html body.akzfa-pbx .column { padding: 10px; }
+html body.akzfa-pbx :is(.input, select, textarea, .chosen-container) { max-width: 100%; }
+html body.akzfa-pbx :is(input[type="tel"], input[type="email"], input[type="url"], input[type="number"], input[type="password"], code, pre) { direction: ltr; text-align: left; }
+html body.akzfa-pbx .confidential:not(:focus):not(:hover) { color: transparent !important; text-shadow: 0 0 5px var(--akzfa-text); }
+html body.akzfa-pbx :is(.chosen-single, .chosen-choices, .chosen-drop, .chosen-results) { background: var(--akzfa-input-bg) !important; color: var(--akzfa-text) !important; border-color: var(--akzfa-border-strong) !important; box-shadow: none; }
+html body.akzfa-pbx .chosen-single { height: auto; min-height: 42px; padding: 8px 12px; }
+html body.akzfa-pbx .chosen-container .chosen-results li.highlighted { background: var(--akzfa-primary-soft); color: var(--akzfa-primary-text); }
+html body.akzfa-pbx .radiotoggle { flex-wrap: wrap; gap: 4px; }
+html body.akzfa-pbx .radiotoggle input { position: absolute; left: -9999px; }
+html body.akzfa-pbx .radiotoggle input + label { min-height: 38px; padding: 8px 14px; border: 1px solid var(--akzfa-border) !important; border-radius: 6px !important; color: var(--akzfa-text); background: var(--akzfa-surface-2); box-shadow: none; }
+html body.akzfa-pbx .radiotoggle input:checked + label { color: var(--akzfa-primary-text); background: var(--akzfa-primary-soft); border-color: var(--akzfa-primary) !important; }
+html body.akzfa-pbx .radiotoggle input:focus-visible + label { outline: 2px solid var(--akzfa-primary-text); outline-offset: 2px; }
+html body.akzfa-pbx :is(.tabs, #tab-content, .tabs > ul) { max-width: 100%; width: 100% !important; }
+html body.akzfa-pbx .tabs ul { display: flex; flex-wrap: wrap; margin: 0; border-color: var(--akzfa-border); }
+html body.akzfa-pbx .tabs a { color: var(--akzfa-text); border-color: var(--akzfa-border); }
+html body.akzfa-pbx .tabs li.is-active a { color: var(--akzfa-primary-text); border-color: var(--akzfa-primary); }
+html body.akzfa-pbx #action-bar { position: sticky; bottom: 0; width: fit-content; max-width: 100%; padding: 12px; margin-top: 16px; white-space: normal; background: var(--akzfa-surface-2); border: 1px solid var(--akzfa-border); border-radius: 10px; }
+html body.akzfa-pbx #dashboard { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: 20px; }
+html body.akzfa-pbx :is(#sysinfo-left, #sysinfo-right) { width: auto !important; min-width: 0; margin: 0; padding: 0; float: none; }
+html body.akzfa-pbx .infobox { width: 100%; min-width: 0; resize: none; overflow: visible; }
+html body.akzfa-pbx .databox { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: auto; min-height: 34px; padding: 6px 8px; margin: 4px 0; border-color: var(--akzfa-border); }
+html body.akzfa-pbx .databox :is(.dataname, .datavalue) { position: relative; inset: auto; z-index: 1; min-width: 0; color: var(--akzfa-text); }
+html body.akzfa-pbx .databox .dataname { overflow-wrap: anywhere; }
+html body.akzfa-pbx .databox .datavalue { direction: ltr; flex-shrink: 0; }
+html body.akzfa-pbx .databox .bargraph { position: absolute; inset: 0 0 0 auto; height: 100%; opacity: .2; border-radius: 4px; }
+html body.akzfa-pbx .databox .graphok { background: var(--akzfa-success-soft); color: var(--akzfa-success); }
+html body.akzfa-pbx .databox .graphwarn { background: var(--akzfa-warning-soft); color: var(--akzfa-warning); }
+html body.akzfa-pbx .databox .grapherror { background: var(--akzfa-danger-soft); color: var(--akzfa-danger); }
+html body.akzfa-pbx #syslog ul { padding: 0; }
+html body.akzfa-pbx #syslog ul li { color: var(--akzfa-text); padding: 8px 0; border-color: var(--akzfa-border); }
+html body.akzfa-pbx #syslog ul li > div { padding: 0; }
+html body.akzfa-pbx #syslog h4 { padding-inline-end: 52px; text-align: start; color: var(--akzfa-text); line-height: 1.9; }
+html body.akzfa-pbx #syslog .notification_buttons { right: auto; left: 4px; top: 10px; }
+html body.akzfa-pbx .syslog_text { padding: 0; }
+
+/* Contact fields keep their original names, visibility and submission path. */
+html body .akzfa-contact-form { width: 100%; max-width: 1100px; margin-inline: auto; table-layout: auto; }
+html body .akzfa-contact-form > tbody > tr > td { padding: 8px; }
+html body .akzfa-contact-form .tabForm { display: block; table-layout: auto; border-spacing: 0 12px; }
+html body .akzfa-contact-form .tabForm > tbody { display: block; width: 100%; }
+html body .akzfa-contact-form .tabForm > tbody > tr:not(#tr_new_contact) { width: 100%; }
+html body .akzfa-contact-form #tr_new_contact { display: grid; grid-template-columns: 140px minmax(0, 1fr); align-items: start; gap: 24px; }
+html body .akzfa-contact-form #tr_new_contact > td { display: block; width: auto !important; padding: 0 !important; }
+html body .akzfa-contact-form #tr_new_contact > td:first-child { padding-top: 28px !important; text-align: center !important; }
+html body .akzfa-contact-form #tr_new_contact > td:first-child img { width: 110px; height: 110px; max-width: 100%; object-fit: contain; border: 1px solid var(--akzfa-border); border-radius: 12px; background: var(--akzfa-surface-2); padding: 12px; }
+html body .akzfa-contact-fields, html body .akzfa-contact-fields > tbody { display: block; width: 100%; }
+html body .akzfa-contact-fields > tbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+html body .akzfa-contact-fields > tbody > tr { display: flex; flex-direction: column; min-width: 0; gap: 6px; }
+html body .akzfa-contact-fields > tbody > tr > td { display: block; width: 100% !important; padding: 0 !important; text-align: right !important; }
+html body .akzfa-contact-fields > tbody > tr:has(textarea), html body .akzfa-contact-fields > tbody > tr:has(input[type="file"]), html body .akzfa-contact-fields > tbody > tr:has(input[type="radio"]) { grid-column: 1 / -1; }
+html body .akzfa-contact-fields > tbody > tr:has(input[type="radio"]) { flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
+html body .akzfa-contact-fields > tbody > tr:has(input[type="radio"]) > td { width: auto !important; }
+html body .akzfa-contact-fields :is(input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]), select, textarea) { width: 100% !important; min-width: 0; max-width: 100% !important; }
+html body .akzfa-contact-fields :is(input[name*="phone"], input[name^="fax"], input[name="email"]) { direction: ltr; text-align: left; }
+html body .akzfa-module-address_book :is(table.tabla_listado, table.issabel-standard-table) { width: max-content; min-width: 100%; table-layout: auto; }
+html body .akzfa-module-address_book :is(table.tabla_listado, table.issabel-standard-table) > tbody > tr > td { min-width: 100px; padding: 12px 16px !important; white-space: nowrap !important; }
+html body .akzfa-module-address_book :is(table.tabla_listado, table.issabel-standard-table) > tbody > tr > td:first-child { min-width: 48px; width: 48px; }
+html body .akzfa-module-address_book .neo-table-header-row-filter { height: auto !important; padding: 0 !important; }
+
+/* Hardware status retains device colors while the legend follows the theme. */
+html body .akzfa-hardware { display: block; direction: rtl; table-layout: auto; border-spacing: 0 12px; }
+html body .akzfa-hardware > tbody, html body .akzfa-hardware > tbody > tr { display: block; width: 100%; }
+html body .akzfa-hardware > tbody > tr:not(.filterForm) > td { display: block; width: 100%; }
+html body .akzfa-hardware > tbody > tr.filterForm { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(280px, 1fr); gap: 16px; }
+html body .akzfa-hardware > tbody > tr.filterForm > td { display: block; min-width: 0; padding: 16px !important; border-radius: 10px; }
+html body .akzfa-hardware > tbody > tr.filterForm > td:nth-child(2):not(:has(.hourglass[style*="display: block"])) { padding: 0 !important; border: 0; }
+html body .akzfa-hardware :is(fieldset, .fielform, #optionsAdvance) { width: auto; max-width: 100%; height: auto; padding: 12px; font: inherit; color: var(--akzfa-text) !important; }
+html body .akzfa-hardware .fielform { margin: 0; }
+html body .akzfa-hardware .fielform table { width: 100%; float: none; }
+html body .akzfa-hardware .fielform td { padding: 6px; color: var(--akzfa-text) !important; text-align: start; }
+html body .akzfa-hardware .fielform td:first-child { width: 40px; }
+html body .akzfa-hardware .sombreado { color: var(--akzfa-heading) !important; font: 600 14px/1.8 Vazirmatn, sans-serif; }
+html body .akzfa-hardware :is(td[style*="background-color:white"], table[style*="background-color:white"]) { background-color: var(--akzfa-surface-2) !important; border-color: var(--akzfa-border) !important; }
+html body .akzfa-hardware #optionsAdvance { line-height: 2.4; }
+html body .akzfa-hardware .table_navigation_row { background: var(--akzfa-surface) !important; border-color: var(--akzfa-border); }
+html body .akzfa-hardware-empty { padding: 16px; margin-top: 16px; border: 1px solid var(--akzfa-border); border-radius: 8px; color: var(--akzfa-muted); text-align: center; }
+
+/* The endpoint configurator uses Ember views and its own table classes. */
+html body #endpointConfigApplication { background: var(--akzfa-surface) !important; color: var(--akzfa-text); min-width: 0; }
+html body #endpointConfigApplication .neo-endpointconfig-header-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; height: auto; min-height: 68px; margin: 0 0 16px; padding: 12px; background: var(--akzfa-surface-2); border: 1px solid var(--akzfa-border); border-radius: 10px; }
+html body #endpointConfigApplication .neo-endpointconfig-header-row > .ember-view { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+html body #endpointConfigApplication .neo-endpointconfig-header-row .ember-view .ember-view { position: relative; float: none; }
+html body #endpointConfigApplication .neo-table-header-row-filter { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; float: none; height: auto; width: auto; max-width: 100%; padding: 0; border: 0; background: transparent; }
+html body #endpointConfigApplication .neo-table-header-row-filter input[type="text"] { width: 190px; direction: ltr; text-align: left; }
+html body #endpointConfigApplication .neo-table-action { min-height: 40px; margin: 0; padding: 8px 12px; }
+html body #endpointConfigApplication .neo-table-action[data-akzfa-caption]::after { content: attr(data-akzfa-caption); font-size: 12px; }
+html body #endpointConfigApplication .neo-endpointconfig-header-row-navigation { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; position: static; float: none; height: auto; margin-inline-start: auto; padding: 6px 0; border: 0; }
+html body #endpointConfigApplication #addonlist { display: block; width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--akzfa-border); border-radius: 8px; }
+html body #endpointConfigApplication #addonlist > table { width: 100% !important; min-width: 860px; table-layout: auto !important; border-collapse: collapse; }
+html body #endpointConfigApplication #addonlist :is(td, th) { padding: 12px 16px; min-width: 80px; height: auto; background: var(--akzfa-surface); color: var(--akzfa-text); border-bottom: 1px solid var(--akzfa-border); font: 400 13px/1.8 Vazirmatn, sans-serif; text-align: start; text-indent: 0; white-space: nowrap; }
+html body #endpointConfigApplication #addonlist .neo-table-title-row { background: var(--akzfa-surface-2); color: var(--akzfa-heading); font-weight: 600; }
+html body #endpointConfigApplication #addonlist td:is(:nth-child(3), :nth-child(4)) { direction: ltr; text-align: left; }
+html body #endpointConfigApplication #addonlist td select { min-width: 160px; width: auto; }
+html body #endpointConfigApplication #addonlist td[colspan] { padding: 28px 16px; text-align: center; }
+html body #endpointConfigApplication #footer { display: flex; height: auto !important; padding: 12px; background: var(--akzfa-surface-2) !important; }
+html body #endpointConfigApplication .neo-endpointconfig-submenu { min-width: 220px; max-width: min(420px, 80vw); padding: 12px; background: var(--akzfa-surface-2); color: var(--akzfa-text); border: 1px solid var(--akzfa-border); border-radius: 8px; z-index: 20; }
+
+/* Recordings keep timestamps, numbers and row actions distinct. */
+html body .akzfa-module-monitoring #CDRreport td { min-width: 120px; }
+html body .akzfa-module-monitoring #CDRreport td:last-child { min-width: 190px; }
+html body .akzfa-module-monitoring #CDRreport td :is(button, .btn, a) { vertical-align: middle; }
+html body .akzfa-module-monitoring #CDRreport td :is(button, .btn) { margin: 3px; min-height: 36px; }
+html body .akzfa-module-monitoring #CDRreport td audio { display: block; width: 260px; max-width: none; margin: 4px 0; }
+@media (max-width: 900px) {
+  html body.akzfa-pbx #dashboard { grid-template-columns: minmax(0, 1fr); }
+  html body.akzfa-pbx .rnav { float: none; width: 100%; max-width: 100%; margin: 0 0 16px; }
+  html body .akzfa-hardware > tbody > tr.filterForm { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  html body.akzfa-pbx #page_body { padding: 12px; }
+  html body.akzfa-pbx .navbar-dropdown.multicolumn { column-count: 1; }
+  html body .akzfa-contact-form #tr_new_contact { grid-template-columns: minmax(0, 1fr); }
+  html body .akzfa-contact-form #tr_new_contact > td:first-child { padding-top: 0 !important; }
+  html body .akzfa-contact-fields > tbody { grid-template-columns: minmax(0, 1fr); }
+}

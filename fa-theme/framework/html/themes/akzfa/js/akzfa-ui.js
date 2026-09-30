@@ -1,0 +1,1067 @@
+/* AKZ / AKZ presentation only. Does not alter requests, permissions or PBX data. */
+(function () {
+    'use strict';
+    var doc = document, root = doc.documentElement, themeKey = 'akzfa-theme';
+    var menu, sidebar, drawerOpener, modalOpener, modalVisible = false;
+    var uiTimer, frameStyleHref, plotObserver;
+    /* Persian locale for the calendar stack (FullCalendar + jQuery-UI datepicker).
+       Runs at script-eval time — before the module's own $(document).ready
+       initialises its widgets — so module code keeps working unchanged while
+       every widget renders Persian. */
+    var faLocale = {
+        monthNames: ['ژانویه', 'فوریه', 'مارس', 'آوریل', 'مه', 'ژوئن', 'ژوئیه', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'],
+        dayNames: ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'],
+        dayNamesShort: ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش'],
+        buttonText: { today: 'امروز', month: 'ماه', week: 'هفته', day: 'روز' },
+        allDayText: 'تمام روز',
+        firstDay: 1,
+        isRTL: true
+    };
+    function installCalendarLocale() {
+        var $ = window.jQuery;
+        if (!$) { return; }
+        if ($.datepicker && $.datepicker.regional) {
+            $.datepicker.regional.fa = {
+                closeText: 'تأیید', prevText: '‹', nextText: '›', currentText: 'امروز',
+                monthNames: faLocale.monthNames, monthNamesShort: faLocale.monthNames,
+                dayNames: faLocale.dayNames, dayNamesShort: faLocale.dayNamesShort, dayNamesMin: faLocale.dayNamesShort,
+                weekHeader: 'ه', dateFormat: 'yy-mm-dd', firstDay: 1, isRTL: true, showMonthAfterYear: false, yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional.fa);
+        }
+        if ($.fn && $.fn.fullCalendar && $.fn.fullCalendar.defaults) {
+            var d = $.fn.fullCalendar.defaults;
+            d.monthNames = faLocale.monthNames; d.monthNamesShort = faLocale.monthNames;
+            d.dayNames = faLocale.dayNames; d.dayNamesShort = faLocale.dayNamesShort;
+            d.buttonText = faLocale.buttonText; d.allDayText = faLocale.allDayText;
+            d.firstDay = 1; d.isRTL = true;
+        }
+    }
+    installCalendarLocale();
+    function all(selector, scope) { return Array.prototype.slice.call((scope || doc).querySelectorAll(selector)); }
+    function closest(el, selector) { return el && el.nodeType === 1 ? el.closest(selector) : null; }
+    function storageGet() { try { return localStorage.getItem(themeKey); } catch (e) { return null; } }
+    function currentTheme() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+    function applyTheme(theme, persist) {
+        theme = theme === 'light' ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+        if (persist !== false) { try { localStorage.setItem(themeKey, theme); } catch (e) { /* Storage can be disabled. */ } }
+        all('.akzfa-theme-toggle').forEach(function (button) {
+            var label = theme === 'dark' ? 'فعال کردن تم روشن' : 'فعال کردن تم تیره';
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
+            button.setAttribute('aria-pressed', String(theme === 'dark'));
+            var icon = button.querySelector('i');
+            if (icon) { icon.classList.remove('fa-moon-o', 'fa-sun-o'); icon.classList.add(theme === 'dark' ? 'fa-sun-o' : 'fa-moon-o'); }
+        });
+        syncFrames();
+        themeCharts();
+        themePlots();
+    }
+    function toggleTheme() { applyTheme(currentTheme() === 'dark' ? 'light' : 'dark'); }
+    function drawerMode() { return window.matchMedia('(max-width: 991px)').matches; }
+    function focusable(container) {
+        return all('a[href], button:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="0"]', container)
+            .filter(function (el) { return el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden'; });
+    }
+    function trapTab(event, container) {
+        if (event.key !== 'Tab') { return; }
+        var items = focusable(container), first = items[0], last = items[items.length - 1];
+        if (!first) { event.preventDefault(); container.focus(); return; }
+        if (event.shiftKey && (doc.activeElement === first || !container.contains(doc.activeElement))) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && (doc.activeElement === last || !container.contains(doc.activeElement))) { event.preventDefault(); first.focus(); }
+    }
+    function closeSidebar(restore) {
+        doc.body.classList.remove('akzfa-sidebar-open');
+        all('.akzfa-topbar-burger').forEach(function (button) { button.setAttribute('aria-expanded', 'false'); });
+        var main = doc.querySelector('.main-content');
+        if (main) { main.inert = false; }
+        if (sidebar) { sidebar.inert = drawerMode(); sidebar.removeAttribute('aria-modal'); sidebar.setAttribute('role', 'navigation'); }
+        if (restore !== false && drawerOpener) { drawerOpener.focus(); drawerOpener = null; }
+    }
+    function openSidebar(button) {
+        if (!sidebar || !drawerMode()) { return; }
+        drawerOpener = button || doc.activeElement;
+        doc.body.classList.add('akzfa-sidebar-open');
+        sidebar.inert = false;
+        sidebar.setAttribute('role', 'dialog');
+        sidebar.setAttribute('aria-modal', 'true');
+        all('.akzfa-topbar-burger').forEach(function (el) { el.setAttribute('aria-expanded', 'true'); });
+        var main = doc.querySelector('.main-content');
+        if (main) { main.inert = true; }
+        var first = sidebar.querySelector('.akzfa-sidebar-close') || sidebar.querySelector('a');
+        if (first) { first.focus(); }
+    }
+    function submenuFor(li) { return all('ul', li).filter(function (el) { return el.parentNode === li; })[0]; }
+    function setExpanded(li, expanded) {
+        var sub = submenuFor(li), button = li.querySelector(':scope > .akzfa-menu-toggle');
+        if (!sub) { return; }
+        li.classList.toggle('opened', expanded);
+        sub.classList.toggle('visible', expanded);
+        if (button) { button.setAttribute('aria-expanded', String(expanded)); }
+    }
+    function toggleCategory(li) {
+        var open = !li.classList.contains('opened');
+        if (open) {
+            all(':scope > li', li.parentNode).forEach(function (sibling) { if (sibling !== li) { setExpanded(sibling, false); } });
+        }
+        setExpanded(li, open);
+    }
+    function initMenu() {
+        menu = doc.getElementById('main-menu'); sidebar = doc.querySelector('.sidebar-menu');
+        if (!menu || !sidebar) { return; }
+        var selected = doc.getElementById('issabel_framework_module_id');
+        var selectedId = selected && selected.value;
+        var foundCurrent = false;
+        all('li', menu).forEach(function (li, i) {
+            var link = li.querySelector(':scope > a'), sub = submenuFor(li);
+            if (!link) { return; }
+            if (selectedId && !foundCurrent) {
+                var url = new URL(link.href, window.location.href);
+                if (url.searchParams.get('menu') === selectedId) { link.setAttribute('aria-current', 'page'); foundCurrent = true; }
+            }
+            if (!sub || !sub.querySelector('li a')) { li.classList.remove('has-sub'); return; }
+            li.classList.add('has-sub');
+            sub.id = sub.id || 'akzfa-submenu-' + i;
+            var button = doc.createElement('button');
+            button.type = 'button'; button.className = 'akzfa-menu-toggle';
+            button.setAttribute('aria-label', 'زیرمنوی ' + link.textContent.trim());
+            button.setAttribute('aria-controls', sub.id);
+            li.insertBefore(button, sub);
+            setExpanded(li, li.classList.contains('opened'));
+        });
+        var current = menu.querySelector('[aria-current="page"]') || menu.querySelector('li.active li.active > a') || menu.querySelector('li.active > a');
+        if (current) {
+            current.setAttribute('aria-current', 'page');
+            var parent = current.parentNode;
+            while (parent && parent !== menu) { if (parent.tagName === 'LI') { setExpanded(parent, true); } parent = parent.parentNode; }
+        }
+        // Capture precedes Neon's direct GSAP handlers, avoiding double toggles.
+        // Category rows toggle; leaf links must still navigate, so legacy bubble
+        // handlers (which call preventDefault and kill navigation) are cut off
+        // with stopPropagation from this capture listener.
+        menu.addEventListener('click', function (event) {
+            var control = closest(event.target, 'a, .akzfa-menu-toggle');
+            if (!control || !menu.contains(control)) { return; }
+            var li = control.parentNode;
+            if (submenuFor(li) && li.classList.contains('has-sub')) {
+                event.preventDefault(); event.stopImmediatePropagation(); toggleCategory(li);
+                return;
+            }
+            if (control.tagName === 'A') {
+                event.stopPropagation(); /* navigation stays enabled, legacy handlers are silenced */
+                if (drawerMode()) { closeSidebar(false); }
+            }
+        }, true);
+        menu.addEventListener('keydown', function (event) {
+            var li = closest(event.target, 'li');
+            if (!li) { return; }
+            if (event.key === 'ArrowLeft' && submenuFor(li)) {
+                event.preventDefault(); setExpanded(li, true);
+                var first = submenuFor(li).querySelector('a'); if (first) { first.focus(); }
+            } else if (event.key === 'ArrowRight') {
+                var ancestor = li.parentNode.closest('li');
+                if (li.classList.contains('opened')) { event.preventDefault(); setExpanded(li, false); }
+                else if (ancestor) { event.preventDefault(); setExpanded(ancestor, false); ancestor.querySelector('a').focus(); }
+            }
+        });
+        // Old sidebar controls may be triggered by Issabel's chat panel.
+        window.toggle_sidebar_menu = function () { if (drawerMode()) { doc.body.classList.contains('akzfa-sidebar-open') ? closeSidebar() : openSidebar(); } };
+        window.show_sidebar_menu = function () { if (drawerMode()) { openSidebar(); } };
+        window.hide_sidebar_menu = function () { closeSidebar(); };
+        window.fit_main_content_height = function () { /* CSS owns page height. */ };
+        var page = doc.querySelector('.page-container'); if (page) { page.classList.remove('sidebar-collapsed'); }
+        closeSidebar(false);
+        /* Belt and braces: whatever opens the drawer, an open drawer must never
+           stay inert (the reported "dead menu" symptom). */
+        if (window.MutationObserver) {
+            new MutationObserver(function () {
+                if (doc.body.classList.contains('akzfa-sidebar-open') && sidebar && sidebar.inert) { sidebar.inert = false; }
+            }).observe(doc.body, { attributes: true, attributeFilter: ['class'] });
+        }
+        var media = window.matchMedia('(max-width: 991px)');
+        if (media.addEventListener) { media.addEventListener('change', function () { closeSidebar(); }); }
+        else { media.addListener(function () { closeSidebar(); }); }
+    }
+    function normalize(text) { return String(text).toLowerCase().replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/[\u064b-\u065f\u200c]/g, '').replace(/\s+/g, ' ').trim(); }
+    function initSearch() {
+        var input = doc.getElementById('search_module_issabel');
+        if (!input || !menu) { return; }
+        var form = input.closest('form'), box = doc.createElement('div'), status = doc.createElement('span');
+        box.id = 'akzfa-search-results'; box.className = 'akzfa-search-results'; box.setAttribute('role', 'listbox'); box.setAttribute('aria-label', 'نتیجه جستجوی منو');
+        status.className = 'akzfa-sr-only'; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+        form.parentNode.appendChild(box); form.parentNode.appendChild(status);
+        input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list'); input.setAttribute('aria-controls', box.id); input.setAttribute('aria-expanded', 'false');
+        var index = [], seen = {}, matches = [], active = -1;
+        all('a[href*="menu="]', menu).forEach(function (link) {
+            if (seen[link.href]) { return; } seen[link.href] = true;
+            var parents = [], li = link.parentNode.parentNode.closest('li');
+            while (li) { var label = li.querySelector(':scope > a'); if (label) { parents.unshift(label.textContent.trim()); } li = li.parentNode.closest('li'); }
+            index.push({ name: link.textContent.trim(), path: parents.join(' / '), href: link.getAttribute('href') });
+        });
+        function close() { box.classList.remove('akzfa-open'); input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); active = -1; }
+        function activate(i) {
+            active = i;
+            all('.akzfa-search-item', box).forEach(function (item, idx) { item.classList.toggle('akzfa-active', idx === i); item.setAttribute('aria-selected', String(idx === i)); });
+            var option = box.querySelector('.akzfa-active');
+            if (option) { input.setAttribute('aria-activedescendant', option.id); option.scrollIntoView({ block: 'nearest' }); }
+        }
+        function render() {
+            var q = normalize(input.value); box.textContent = ''; matches = []; active = -1;
+            input.removeAttribute('aria-activedescendant');
+            if (!q) { close(); status.textContent = ''; return; }
+            matches = index.filter(function (item) { return normalize(item.name + ' ' + item.path).indexOf(q) !== -1; }).slice(0, 15);
+            matches.forEach(function (item, i) {
+                var a = doc.createElement('a'), label = doc.createElement('span'), path = doc.createElement('small');
+                a.className = 'akzfa-search-item'; a.id = 'akzfa-search-opt-' + i; a.href = item.href; a.setAttribute('role', 'option'); a.setAttribute('aria-selected', 'false'); a.tabIndex = -1;
+                label.textContent = item.name; path.textContent = item.path; a.appendChild(label); a.appendChild(path); box.appendChild(a);
+            });
+            if (!matches.length) { var empty = doc.createElement('div'); empty.className = 'akzfa-search-empty'; empty.textContent = 'نتیجه‌ای یافت نشد'; box.appendChild(empty); }
+            status.textContent = matches.length ? matches.length + ' نتیجه یافت شد' : 'نتیجه‌ای یافت نشد';
+            input.setAttribute('aria-expanded', 'true'); box.classList.add('akzfa-open');
+        }
+        input.addEventListener('input', render);
+        input.addEventListener('focus', function () { if (input.value) { render(); } });
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') { event.preventDefault(); close(); return; }
+            if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && matches.length) {
+                event.preventDefault(); box.classList.add('akzfa-open'); input.setAttribute('aria-expanded', 'true');
+                activate(active < 0 ? (event.key === 'ArrowDown' ? 0 : matches.length - 1) : (active + (event.key === 'ArrowDown' ? 1 : -1) + matches.length) % matches.length);
+            }
+        });
+        form.addEventListener('submit', function (event) { event.preventDefault(); if (matches.length) { window.location.href = matches[active < 0 ? 0 : active].href; } }, true);
+        box.addEventListener('mousedown', function (event) { if (closest(event.target, 'a')) { event.preventDefault(); } });
+        doc.addEventListener('click', function (event) { if (!form.parentNode.contains(event.target)) { close(); } });
+        form.parentNode.addEventListener('focusout', function () { setTimeout(function () { if (!form.parentNode.contains(doc.activeElement)) { close(); } }, 0); });
+    }
+    function initPassword() {
+        var input = doc.getElementById('input_pass');
+        if (!input) { return; }
+        var wrap = doc.createElement('div'), toggle = doc.createElement('button');
+        wrap.className = 'akzfa-password-wrap'; input.parentNode.insertBefore(wrap, input); wrap.appendChild(input);
+        toggle.type = 'button'; toggle.className = 'akzfa-pass-toggle'; toggle.setAttribute('aria-label', 'نمایش رمز عبور'); toggle.setAttribute('aria-pressed', 'false'); toggle.setAttribute('aria-controls', input.id);
+        toggle.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>'; wrap.appendChild(toggle);
+        toggle.addEventListener('click', function () {
+            var visible = input.type === 'password'; input.type = visible ? 'text' : 'password';
+            toggle.setAttribute('aria-pressed', String(visible)); toggle.setAttribute('aria-label', visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور'); toggle.querySelector('i').className = visible ? 'fa fa-eye-slash' : 'fa fa-eye';
+        });
+    }
+    var dataTables = 'table.issabel-standard-table, table.tabla_listado, table.table, table.dataTable, table.listDataTable, table.table_data';
+    var excludedTables = '.fc, .calendar, .ui-datepicker, .datepicker, #applet_grid, .akzfa-hardware, .akzfa-contact-form, #endpointConfigApplication, .calendarContainer, #calendar_eventdialog';
+    function enhanceMessages() {
+        var headings = {
+            'MESSAGE': ['پیام', 'info'], 'پیام': ['پیام', 'info'],
+            'INFORMATION': ['اطلاعات', 'info'], 'INFO': ['اطلاعات', 'info'], 'اطلاعات': ['اطلاعات', 'info'],
+            'ERROR': ['خطا', 'error'], 'خطا': ['خطا', 'error'],
+            'WARNING': ['هشدار', 'warning'], 'هشدار': ['هشدار', 'warning'],
+            'SUCCESS': ['موفق', 'success'], 'موفق': ['موفق', 'success']
+        };
+        all('.div_msg_errors').forEach(function (message) {
+            // Older modules, including Beta Channel, emit unclassed children.
+            // Add presentation hooks without replacing their content or callbacks.
+            if (!message.querySelector('.div_msg_errors_content')) {
+                var parts = message.children;
+                if (parts.length === 3 && parts[1].querySelector('[onclick*="hide_message_error"]')) {
+                    parts[0].classList.add('div_msg_errors_title');
+                    parts[1].classList.add('div_msg_errors_dismiss');
+                    parts[2].classList.add('div_msg_errors_content');
+                }
+            }
+            var title = message.querySelector('.div_msg_errors_title');
+            var heading = title && headings[title.textContent.trim().replace(/[:：]\s*$/, '').toUpperCase()];
+            var type = heading ? heading[1] : 'error';
+            if (heading) {
+                var caption = title.querySelector('b') || title;
+                if (caption.textContent.trim() !== heading[0]) { caption.textContent = heading[0]; }
+            }
+            message.setAttribute('data-akzfa-message-type', type);
+            message.setAttribute('role', type === 'error' || type === 'warning' ? 'alert' : 'status');
+            all('.div_msg_errors_dismiss button, .div_msg_errors_dismiss input[type="button"]', message).forEach(function (button) {
+                button.setAttribute('aria-label', 'بستن پیام');
+                button.setAttribute('title', 'بستن پیام');
+            });
+        });
+    }
+    function initColorSwatches() {
+        var selector = doc.querySelector('#calendar_eventdialog #colorSelector');
+        if (!selector || selector.dataset.akzSwatches) { return; }
+        var current = selector.querySelector('div');
+        if (!current) { return; }
+        selector.dataset.akzSwatches = 'true';
+        var palette = ['#e35332', '#e67e22', '#f1c40f', '#27ae60', '#16a085', '#2980b9', '#2c3e80', '#8e44ad', '#e84393', '#7f8c8d'];
+        var currentColor = (current.style.backgroundColor || '').trim();
+        var colorField = doc.querySelector('#calendar_eventdialog input[name="color"], #calendar_eventdialog input#color');
+        var box = doc.createElement('div'); box.className = 'akz-color-swatches'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'انتخاب رنگ رویداد');
+        palette.forEach(function (color) {
+            var swatch = doc.createElement('button');
+            swatch.type = 'button'; swatch.className = 'akz-color-swatch';
+            swatch.style.backgroundColor = color;
+            swatch.dataset.akzColor = color;
+            swatch.setAttribute('aria-label', 'رنگ ' + color);
+            swatch.setAttribute('aria-pressed', 'false');
+            swatch.addEventListener('click', function () {
+                current.style.backgroundColor = color;
+                if (colorField) { colorField.value = color.replace('#', ''); }
+                all('.akz-color-swatch', box).forEach(function (other) { other.setAttribute('aria-pressed', String(other === swatch)); });
+            });
+            box.appendChild(swatch);
+        });
+        function markSelected() {
+            var value = rgbToHex(current.style.backgroundColor).toLowerCase();
+            if (!value) { return; }
+            all('.akz-color-swatch', box).forEach(function (swatch) {
+                swatch.setAttribute('aria-pressed', String((swatch.dataset.akzColor || '').toLowerCase() === value));
+            });
+        }
+        function rgbToHex(value) {
+            var match = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(value || '');
+            if (!match) { return ''; }
+            return '#' + match.slice(1).map(function (part) { return ('0' + Number(part).toString(16)).slice(-2); }).join('');
+        }
+        selector.appendChild(box);
+        // The module's own color picker may still set the div color; keep the ring in sync.
+        if (window.MutationObserver) { new MutationObserver(markSelected).observe(current, { attributes: true, attributeFilter: ['style'] }); }
+        markSelected();
+    }
+    function enhanceContent() {
+        enhanceNetworkControls();
+        enhanceMessages();
+        initColorSwatches();
+        var selectedModule = doc.getElementById('issabel_framework_module_id');
+        var moduleId = selectedModule ? selectedModule.value : new URL(window.location.href).searchParams.get('menu');
+        var moduleContent = doc.querySelector('.neo-module-content');
+        if (moduleContent && /^(address_book|hardware_detector|monitoring)$/.test(moduleId)) {
+            moduleContent.classList.add('akzfa-module-' + moduleId);
+        }
+        all('#endpointConfigApplication .neo-table-action').forEach(function (button) {
+            var caption = button.title || (button.parentNode && button.parentNode.title);
+            if (caption) { button.setAttribute('aria-label', caption); button.setAttribute('data-akzfa-caption', caption); }
+        });
+        var qrTemplate = doc.getElementById('template');
+        if (qrTemplate && qrTemplate.form && qrTemplate.form.querySelector('#asteriskip')) { qrTemplate.form.classList.add('akzfa-qr-config'); }
+        all('.akzfa-report-scroll').forEach(function (region) {
+            if (!region.hasAttribute('tabindex')) {
+                region.tabIndex = 0; region.setAttribute('role', 'region');
+                region.setAttribute('aria-label', 'جدول مکالمات؛ برای مشاهده ستون‌ها به طرفین پیمایش کنید');
+            }
+        });
+        all(dataTables).forEach(function (table) {
+            // CDR and recordings create their own table-only scroll region.
+            if (table.id === 'CDRreport' || table.closest(excludedTables)) { return; }
+            var wrapper = table.closest('.akzfa-table-scroll, .akzfa-table-wrap, .table-responsive, .dataTables_scrollBody, .dataTables_scrollHead');
+            if (!wrapper) { wrapper = doc.createElement('div'); wrapper.className = 'akzfa-table-scroll'; table.parentNode.insertBefore(wrapper, table); wrapper.appendChild(table); }
+            if (!wrapper.hasAttribute('tabindex')) { wrapper.tabIndex = 0; wrapper.setAttribute('role', 'region'); wrapper.setAttribute('aria-label', 'جدول اطلاعات؛ برای مشاهده ستون‌ها به طرفین پیمایش کنید'); }
+        });
+        all('.neo-module-content table, .neo-modal-issabel-popup-content table').forEach(function (table) {
+            if (table.classList.contains('akzfa-form-table') || table.closest(excludedTables) || table.matches(dataTables) || table.querySelector('thead, table, th') || table.classList.contains('tabForm')) { return; }
+            // Only genuine field-layout tables; plain lists and all calendar tables retain native layout.
+            if (table.querySelector('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]), select, textarea')) { table.classList.add('akzfa-form-table'); }
+        });
+        // Core versions without the supplied applet template still get the same layout.
+        all('#cpugauge').forEach(function (gauge) { if (gauge.parentNode.querySelector('#memgauge')) { gauge.parentNode.classList.add('akzfa-gauges'); gauge.parentNode.style.height = 'auto'; } });
+        all('#dashboard-applet-hd-usage').forEach(function (gauge) { gauge.parentNode.classList.add('akzfa-drive'); });
+        all('.neo-applet-processes-row-status-msg').forEach(function (label) {
+            var original = label.style.color;
+            if (/^(green|rgb\(0, ?128, ?0\)|#008000)$/i.test(original)) { label.style.color = 'var(--akzfa-success)'; }
+            else if (/^(red|rgb\(255, ?0, ?0\)|#ff0000)$/i.test(original)) { label.style.color = 'var(--akzfa-danger)'; }
+            else if (/^(blue|rgb\(0, ?0, ?255\)|#0000ff)$/i.test(original)) { label.style.color = 'var(--akzfa-info)'; }
+        });
+        all('.neo-module-content iframe').forEach(function (frame) {
+            frame.classList.add('akzfa-module-frame');
+            if (!frame.hasAttribute('title')) { frame.title = 'محتوای بخش انتخاب‌شده'; }
+            if (!frame.dataset.akzfaFrame) { frame.dataset.akzfaFrame = 'true'; frame.addEventListener('load', syncFrames); }
+        });
+        syncFrames();
+        initPlotResize();
+    }
+    function themePlots() {
+        if (!window.jQuery) { return; }
+        all('#dashboard-applet-performancegraph').forEach(function (element) {
+            var plot = window.jQuery(element).data('plot');
+            if (!plot || typeof plot.getOptions !== 'function') { return; }
+            var options = plot.getOptions(), colors = getComputedStyle(root);
+            options.grid.tickColor = colors.getPropertyValue('--akzfa-border').trim();
+            options.legend.backgroundColor = colors.getPropertyValue('--akzfa-surface').trim();
+            if (typeof plot.setupGrid === 'function') { plot.setupGrid(); }
+            if (typeof plot.draw === 'function') { plot.draw(); }
+        });
+    }
+    function initPlotResize() {
+        if (!window.ResizeObserver || !window.jQuery) { return; }
+        if (!plotObserver) {
+            plotObserver = new ResizeObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    var element = entry.target, width = Math.round(entry.contentRect.width);
+                    if (!width || element.dataset.akzfaPlotWidth === String(width)) { return; }
+                    element.dataset.akzfaPlotWidth = String(width);
+                    var plot = window.jQuery(element).data('plot');
+                    if (plot && typeof plot.resize === 'function') { plot.resize(); plot.setupGrid(); plot.draw(); }
+                });
+            });
+        }
+        all('#dashboard-applet-performancegraph').forEach(function (element) {
+            if (!element.dataset.akzfaPlotObserved) { element.dataset.akzfaPlotObserved = 'true'; plotObserver.observe(element); }
+        });
+    }
+    function syncFrames() {
+        if (!frameStyleHref) { return; }
+        all('.neo-module-content iframe').forEach(function (frame) {
+            try {
+                var page = frame.contentDocument;
+                // Only same-origin module documents; cross-origin integrations retain their owner UI.
+                if (!page || !page.head || frame.contentWindow.location.origin !== location.origin) { return; }
+                page.documentElement.setAttribute('data-theme', currentTheme());
+                if (!page.getElementById('akzfa-frame-theme')) {
+                    var css = page.createElement('link'); css.id = 'akzfa-frame-theme'; css.rel = 'stylesheet'; css.href = frameStyleHref;
+                    page.head.appendChild(css); page.body.classList.add('akzfa-embedded');
+                }
+                // PBX navigation may replace its content without reloading the frame.
+                if (/\/admin(?:\/|$)/.test(frame.contentWindow.location.pathname)) {
+                    page.body.classList.add('akzfa-pbx');
+                    page.documentElement.dir = 'rtl'; page.documentElement.lang = 'fa';
+                    if (!page.getElementById('akzfa-pbx-ui')) {
+                        var script = page.createElement('script'); script.id = 'akzfa-pbx-ui';
+                        script.src = frameStyleHref.replace(/css\/akzfa-tailwind\.css/, 'js/akzfa-embedded.js');
+                        page.head.appendChild(script);
+                    }
+                }
+            } catch (e) { /* Cross-origin content cannot be themed by the parent. */ }
+        });
+    }
+    function themeCharts() {
+        // Chart.js 2 is shipped by the CDR and monitoring modules. Only presentation options change.
+        if (!window.Chart || !window.Chart.instances) { return; }
+        var colors = getComputedStyle(root), ink = colors.getPropertyValue('--akzfa-text-soft').trim(), border = colors.getPropertyValue('--akzfa-border').trim();
+        Object.keys(window.Chart.instances).forEach(function (id) {
+            var chart = window.Chart.instances[id];
+            if (!chart || !chart.options || !chart.canvas || !doc.contains(chart.canvas)) { return; }
+            var options = chart.options;
+            if (options.legend && options.legend.labels) { options.legend.labels.fontColor = ink; options.legend.labels.fontFamily = 'Vazirmatn'; }
+            if (options.scales) {
+                ['xAxes', 'yAxes'].forEach(function (axis) { (options.scales[axis] || []).forEach(function (scale) { if (scale.ticks) { scale.ticks.fontColor = ink; scale.ticks.fontFamily = 'Vazirmatn'; } if (scale.gridLines) { scale.gridLines.color = border; scale.gridLines.zeroLineColor = border; } }); });
+            }
+            if (typeof chart.update === 'function') { chart.update(0); }
+        });
+    }
+    /* Issue 3: the framework modal (change-password popup) is repositioned by
+       legacy scripts with absolute pixel offsets. Recentre it whenever shown. */
+    function patchModalCentering() {
+        var modal = doc.querySelector('.neo-modal-issabel-popup-box');
+        if (!modal || modal.__akzfaCentered) { return; }
+        modal.__akzfaCentered = true;
+        var syncing = false;
+        function center() {
+            if (syncing || getComputedStyle(modal).display === 'none') { return; }
+            syncing = true;
+            window.requestAnimationFrame(function () { syncing = false; });
+            modal.style.setProperty('left', '50%', 'important');
+            modal.style.setProperty('top', '50%', 'important');
+            modal.style.setProperty('right', 'auto', 'important');
+            modal.style.setProperty('bottom', 'auto', 'important');
+            modal.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
+            modal.style.setProperty('height', 'auto', 'important');
+            modal.style.setProperty('min-height', '0', 'important');
+            modal.style.setProperty('max-height', 'calc(100vh - 48px)', 'important');
+            if (window.CSS && window.CSS.supports('height', '100dvh')) {
+                modal.style.setProperty('max-height', 'calc(100dvh - 48px)', 'important');
+            }
+            modal.style.setProperty('overflow-y', 'auto', 'important');
+            modal.style.setProperty('width', 'min(600px, calc(100vw - 24px))', 'important');
+            modal.style.setProperty('padding', '0', 'important');
+            var inner = modal.querySelector('.neo-modal-issabel-popup-content');
+            if (inner) { inner.style.maxHeight = 'none'; inner.style.overflow = 'visible'; }
+            all('#curr_pass, #curr_pass_new, #curr_pass_renew', modal).forEach(function (input) {
+                input.setAttribute('autocomplete', input.id === 'curr_pass' ? 'current-password' : 'new-password');
+                var row = input.closest('tr'), label = row && row.querySelector('td:first-child b');
+                if (label) {
+                    label.id = label.id || input.id + '-label';
+                    input.setAttribute('aria-labelledby', label.id);
+                }
+            });
+            var field = modal.querySelector('input[type="password"], input[type="text"]');
+            if (field && !modal.contains(doc.activeElement)) { setTimeout(function () { try { field.focus(); } catch (e) { /* Focusing can fail. */ } }, 40); }
+        }
+        new MutationObserver(center).observe(modal, { attributes: true, attributeFilter: ['style', 'class'] });
+        /* Clicking the dark mask must close the popup (same legacy close call,
+           so any pending state is cleaned up exactly as before). */
+        var mask = doc.querySelector('.neo-modal-issabel-popup-blockmask');
+        if (mask) {
+            mask.addEventListener('click', function () {
+                if (getComputedStyle(modal).display !== 'none' && typeof window.hideModalPopUP === 'function') { window.hideModalPopUP(); }
+            });
+        }
+    }
+    /* Issue: the admin dropdown (change password / logout) must open with its
+       own robust toggle, anchored so it never escapes the viewport, and be
+       closable by outside clicks and Escape. */
+    function initUserMenu() {
+        var user = doc.querySelector('.akzfa-topbar-user');
+        var link = user && user.querySelector('.akzfa-user-link');
+        if (!user || !link || user.__akzfaUserMenu) { return; }
+        user.__akzfaUserMenu = true;
+        link.setAttribute('aria-haspopup', 'true');
+        function close() {
+            user.classList.remove('akzfa-open');
+            link.setAttribute('aria-expanded', 'false');
+        }
+        function toggle(event) {
+            event.preventDefault(); event.stopImmediatePropagation();
+            var open = !user.classList.contains('akzfa-open');
+            user.classList.toggle('akzfa-open', open);
+            link.setAttribute('aria-expanded', String(open));
+        }
+        link.addEventListener('click', toggle, true);
+        doc.addEventListener('click', function (event) {
+            if (user.classList.contains('akzfa-open') && !user.contains(event.target)) { close(); }
+        });
+        doc.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && user.classList.contains('akzfa-open')) { close(); link.focus(); }
+        });
+        var panel = user.querySelector('.dropdown-menu');
+        if (panel) { all('a', panel).forEach(function (item) { item.addEventListener('click', function () { close(); }); }); }
+    }
+    function initModal() {
+        var modal = doc.querySelector('.neo-modal-issabel-popup-box');
+        if (!modal) { return; }
+        var title = modal.querySelector('.neo-modal-issabel-popup-title'), close = modal.querySelector('.neo-modal-issabel-popup-close');
+        modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.tabIndex = -1;
+        if (title) { title.id = title.id || 'akzfa-modal-title'; modal.setAttribute('aria-labelledby', title.id); }
+        function sync() {
+            var visible = getComputedStyle(modal).display !== 'none';
+            if (visible && !modalVisible) {
+                modalOpener = doc.activeElement;
+                (modal.querySelector('input[type="password"], input[type="text"]') || close || modal).focus();
+            }
+            else if (!visible && modalVisible && modalOpener && doc.contains(modalOpener)) { modalOpener.focus(); }
+            modalVisible = visible;
+        }
+        new MutationObserver(sync).observe(modal, { attributes: true, attributeFilter: ['style', 'class'] });
+        sync();
+        doc.addEventListener('keydown', function (event) {
+            if (!modalVisible) { return; }
+            if (event.key === 'Escape' && close) { event.preventDefault(); close.click(); }
+            trapTab(event, modal);
+        });
+    }
+    function enhanceNetworkControls() {
+        all('input[name^="in_"][name$="_1"]').forEach(function (first) {
+            if (!/^in_(ip_ini|ip_fin|dns1|dns2|wins|gw|gwm|next)_1$/.test(first.name) || first.closest('.akzfa-ip-group')) { return; }
+            var cell = first.closest('td'), prefix = first.name.slice(0, -1);
+            if (!cell) { return; }
+            var fields = [1, 2, 3, 4].map(function (n) { return cell.querySelector('input[name="' + prefix + n + '"]'); });
+            if (fields.some(function (field) { return !field || field.parentNode !== first.parentNode; })) { return; }
+            var row = cell.parentNode, caption = row.cells && row.cells[0] !== cell ? row.cells[0].textContent.replace(/\*/g, '').trim() : '';
+            var group = doc.createElement('span');
+            group.className = 'akzfa-ip-group'; group.dir = 'ltr'; group.setAttribute('role', 'group');
+            if (caption) { group.setAttribute('aria-label', caption); }
+            first.parentNode.insertBefore(group, first);
+            // Move the original inputs and separators, preserving values and listeners.
+            var node = first;
+            while (node) {
+                var next = node.nextSibling; group.appendChild(node);
+                if (node === fields[3]) { break; }
+                node = next;
+            }
+            fields.forEach(function (field, index) {
+                field.classList.add('akzfa-ip-octet'); field.dir = 'ltr'; field.setAttribute('inputmode', 'numeric');
+                if (!field.hasAttribute('aria-label') && !field.hasAttribute('aria-labelledby')) {
+                    field.setAttribute('aria-label', (caption || 'IP') + ' ' + (index + 1));
+                }
+            });
+        });
+        all('.ibutton-container > input[type="checkbox"]').forEach(function (input) {
+            input.setAttribute('role', 'switch');
+            if (input.hasAttribute('aria-label') || input.hasAttribute('aria-labelledby') || (input.labels && input.labels.length)) { return; }
+            var cell = input.closest('td'), label = cell && cell.previousElementSibling;
+            if (label && label.textContent.trim()) { input.setAttribute('aria-label', label.textContent.trim()); }
+        });
+    }
+    /* Issue 6: dotted-quad octet fields (DHCP server). Move focus between the
+       boxes as the user types; values and field names are untouched. */
+    function findOctetGroup(input) {
+        var address = input.closest('.akzfa-ip-group');
+        if (address) { return all('input.akzfa-ip-octet', address); }
+        var container = input.closest('tr') || input.closest('form') || input.parentElement;
+        while (container && container !== doc.body) {
+            var group = all('input[type="text"], input:not([type])', container).filter(function (el) { return el.maxLength === 3; });
+            var ipish = group.length >= 4 && group.some(function (el) {
+                return /ip|dns|gateway|wins|pxe|netmask|subnet|network/i.test(el.name + ' ' + el.id);
+            });
+            if (ipish) { return group; }
+            container = container.parentElement;
+        }
+        return null;
+    }
+    function initOctets() {
+        doc.addEventListener('input', function (event) {
+            var input = event.target;
+            if (!input || input.tagName !== 'INPUT') { return; }
+            var group = findOctetGroup(input);
+            if (!group || group.indexOf(input) === -1) { return; }
+            input.value = input.value.replace(/[^\d]/g, '');
+            if (input.value.length >= input.maxLength) {
+                var next = group[group.indexOf(input) + 1];
+                if (next) { next.focus(); if (next.select) { next.select(); } }
+            }
+        });
+        doc.addEventListener('keydown', function (event) {
+            var input = event.target;
+            if (!input || input.tagName !== 'INPUT') { return; }
+            var group = findOctetGroup(input);
+            if (!group) { return; }
+            var index = group.indexOf(input);
+            if (index < 0) { return; }
+            if (event.key === '.' || event.key === ',') {
+                event.preventDefault();
+                var next = group[index + 1];
+                if (next) { next.focus(); if (next.select) { next.select(); } }
+            } else if (event.key === 'ArrowRight' && input.selectionStart === input.value.length) {
+                var right = group[index + 1];
+                if (right) { event.preventDefault(); right.focus(); if (right.select) { right.select(); } }
+            } else if (event.key === 'ArrowLeft' && input.selectionStart === 0) {
+                var left = group[index - 1];
+                if (left) { event.preventDefault(); left.focus(); if (left.select) { left.select(); } }
+            }
+        });
+        doc.addEventListener('paste', function (event) {
+            var input = event.target;
+            if (!input || input.tagName !== 'INPUT') { return; }
+            var group = findOctetGroup(input);
+            if (!group || group.indexOf(input) === -1) { return; }
+            var match = String(event.clipboardData ? event.clipboardData.getData('text') : '').match(/\d{1,3}/g);
+            if (match && match.length >= group.length) {
+                event.preventDefault();
+                group.forEach(function (el, i) { el.value = match[i]; });
+                var last = group[group.length - 1];
+                if (last) { last.focus(); }
+            }
+        });
+    }
+    /* Issue 4: map tooltips (GeoIP Map) can escape the viewport. Nudge any
+       visible tooltip back inside the visible frame. */
+    function initMapTooltips() {
+        var pending = false;
+        var selector = '.jvectormap-tip, .jvectormap-label, .ammap-tooltip, .map-tooltip, .maptooltip, .country-tooltip, .leaflet-tooltip';
+        function clamp() {
+            pending = false;
+            all(selector).forEach(function (tip) {
+                // SVG tooltip geometry belongs to the chart renderer.
+                if (tip.namespaceURI !== 'http://www.w3.org/1999/xhtml' || tip.closest('svg') || !tip.getClientRects().length) { return; }
+                var rect = tip.getBoundingClientRect(), pad = 8, dx = 0, dy = 0;
+                if (rect.left < pad) { dx = pad - rect.left; }
+                else if (rect.right > window.innerWidth - pad) { dx = window.innerWidth - pad - rect.right; }
+                if (rect.top < pad) { dy = pad - rect.top; }
+                else if (rect.bottom > window.innerHeight - pad) { dy = window.innerHeight - pad - rect.bottom; }
+                if (dx || dy) {
+                    if (tip.style.left || tip.style.top) {
+                        tip.style.left = ((parseFloat(tip.style.left) || 0) + dx) + 'px';
+                        tip.style.top = ((parseFloat(tip.style.top) || 0) + dy) + 'px';
+                    } else {
+                        tip.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+                    }
+                }
+            });
+        }
+        doc.addEventListener('mousemove', function () {
+            if (pending) { return; }
+            pending = true;
+            window.requestAnimationFrame(clamp);
+        }, { passive: true });
+    }
+    /* Calendar dates stay local; the original Issabel fields remain Gregorian
+       yyyy-mm-dd HH:mm, as required by datehhmm()/saveEventDialog(). */
+    var jalaliMonths = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+    var calendarDays = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'];
+    var persianDateFormatter;
+    function toFa(value) { return String(value).replace(/\d/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'[d]; }); }
+    function toEn(value) { return String(value).replace(/[۰-۹٠-٩]/g, function (d) { var n = '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); return n < 0 ? '٠١٢٣٤٥٦٧٨٩'.indexOf(d) : n; }); }
+    function datePad(n) { return ('0' + n).slice(-2); }
+    function dateOnly(date) { return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12); }
+    function addCalendarDays(date, days) { var copy = dateOnly(date); copy.setDate(copy.getDate() + days); return copy; }
+    function gregorianText(date) { return date.getFullYear() + '-' + datePad(date.getMonth() + 1) + '-' + datePad(date.getDate()); }
+    function jalaliParts(date) {
+        try {
+            if (!persianDateFormatter) { persianDateFormatter = new Intl.DateTimeFormat('en-US-u-ca-persian', { day: 'numeric', month: 'numeric', year: 'numeric' }); }
+            if (persianDateFormatter.resolvedOptions().calendar !== 'persian') { return null; }
+            var parts = {};
+            persianDateFormatter.formatToParts(date).forEach(function (p) { parts[p.type] = p.value; });
+            return { y: Number(parts.year), m: Number(parts.month), d: Number(parts.day) };
+        } catch (e) { return null; }
+    }
+    function jalaliToGregorian(y, m, d) {
+        if (m < 1 || m > 12 || d < 1 || d > 31) { return null; }
+        // Binary search against Intl's Persian calendar also handles leap years.
+        var low = Date.UTC(y + 621, 0, 1) / 86400000, high = Date.UTC(y + 622, 11, 31) / 86400000;
+        while (low <= high) {
+            var middle = Math.floor((low + high) / 2), utc = new Date(middle * 86400000);
+            var date = new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 12), j = jalaliParts(date);
+            if (!j) { return null; }
+            var diff = (y - j.y) || (m - j.m) || (d - j.d);
+            if (!diff) { return date; }
+            if (diff > 0) { low = middle + 1; } else { high = middle - 1; }
+        }
+        return null;
+    }
+    function jalaliText(date) { var j = jalaliParts(date); return j ? toFa(j.y + '/' + datePad(j.m) + '/' + datePad(j.d)) : ''; }
+    function parseCalendarField(value) {
+        var m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?: (\d{2}):(\d{2}))?$/.exec(toEn(value).trim());
+        if (!m || Number(m[1]) < 1000 || Number(m[4] || 0) > 23 || Number(m[5] || 0) > 59) { return null; }
+        var date = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] || 0), Number(m[5] || 0));
+        return date.getFullYear() === Number(m[1]) && date.getMonth() === Number(m[2]) - 1 && date.getDate() === Number(m[3]) ? date : null;
+    }
+    /* Both sidebar calendars navigate the same FullCalendar instance. */
+    function initJalali() {
+        if (doc.querySelector('.akzfa-jalali-card')) { return; }
+        var host = doc.querySelector('#calendar_toolbar') || doc.querySelector('.calendar-env .calendar-sidebar') || doc.querySelector('.calendar-env');
+        var today = jalaliParts(new Date());
+        if (!host || !today) { return; }
+        var view = { y: today.y, m: today.m }, selected = gregorianText(new Date());
+        var card = doc.createElement('div'); card.className = 'akzfa-jalali-card'; card.setAttribute('aria-label', 'تقویم جلالی');
+        var mini = doc.querySelector('#calendar_datepick'), main = doc.querySelector('#calendar_main'), boundPicker;
+        function fullCalendar() {
+            var $ = window.jQuery;
+            return $ && $.fn.fullCalendar && main && $(main).data('fullCalendar') ? $(main) : null;
+        }
+        function selectDate(date) {
+            if (!date || !isFinite(date.getTime())) { return; }
+            var j = jalaliParts(date); if (!j) { return; }
+            selected = gregorianText(date); view = { y: j.y, m: j.m };
+            var calendar = fullCalendar();
+            if (calendar) {
+                // Pass a Date, never parse a localized label or formatted string.
+                calendar.fullCalendar('gotoDate', date);
+                calendar.fullCalendar('changeView', 'agendaDay');
+            }
+            var $ = window.jQuery;
+            if ($ && $.fn.datepicker && mini && $(mini).data('datepicker')) { $(mini).datepicker('setDate', date); }
+            render(); persianizeMini();
+        }
+        function persianizeMini() {
+            if (!mini) { return; }
+            var $ = window.jQuery, instance = $ && $.fn.datepicker && $(mini).data('datepicker');
+            if (instance && instance !== boundPicker) {
+                boundPicker = instance;
+                $(mini).datepicker('option', 'onSelect', function () { selectDate($(this).datepicker('getDate')); });
+            }
+            var map = { su: 'ی', mo: 'د', tu: 'س', we: 'چ', th: 'پ', fr: 'ج', sa: 'ش' };
+            all('.ui-datepicker-calendar thead th', mini).forEach(function (th) {
+                var key = th.textContent.trim().toLowerCase().slice(0, 2);
+                if (map[key]) { th.textContent = map[key]; }
+            });
+            all('.ui-datepicker-calendar td a', mini).forEach(function (a) {
+                // jQuery UI 1.x parses the anchor's HTML to obtain the day number.
+                // Keep ASCII underneath; CSS renders the Persian visual label.
+                var day = toEn(a.textContent.trim());
+                if (/^\d{1,2}$/.test(day)) {
+                    if (a.textContent !== day) { a.textContent = day; }
+                    a.setAttribute('data-akzfa-day', toFa(day));
+                    a.setAttribute('aria-label', toFa(day));
+                }
+            });
+            all('select.ui-datepicker-month option', mini).forEach(function (option) {
+                var name = faLocale.monthNames[Number(option.value)];
+                if (name && option.textContent !== name) { option.textContent = name; }
+            });
+            all('select.ui-datepicker-year option', mini).forEach(function (option) {
+                var year = toFa(toEn(option.textContent.trim()));
+                if (option.textContent !== year) { option.textContent = year; }
+            });
+        }
+        function syncMain() {
+            var calendar = fullCalendar();
+            if (calendar) {
+                var date = calendar.fullCalendar('getDate');
+                if (date && isFinite(date.getTime()) && selected !== gregorianText(date)) {
+                    var j = jalaliParts(date);
+                    if (j) { selected = gregorianText(date); view = { y: j.y, m: j.m }; render(); }
+                    if (window.jQuery.fn.datepicker && mini && window.jQuery(mini).data('datepicker')) { window.jQuery(mini).datepicker('setDate', date); }
+                }
+            }
+            var dayMap = { sun: 'ی', mon: 'د', tue: 'س', wed: 'چ', thu: 'پ', fri: 'ج', sat: 'ش' };
+            all('#calendar_main .fc-day-header').forEach(function (th) {
+                var key = th.textContent.trim().toLowerCase().slice(0, 3);
+                if (dayMap[key]) { th.textContent = dayMap[key]; }
+            });
+            all('#calendar_main .fc-header h2').forEach(function (title) {
+                var match = /^([A-Za-z]+)\s+(\d{4})$/.exec(title.textContent.trim());
+                if (match) {
+                    var index = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'].indexOf(match[1].toLowerCase());
+                    if (index >= 0) { title.textContent = faLocale.monthNames[index] + ' ' + toFa(match[2]); }
+                }
+            });
+            all('#calendar_main .fc-header .fc-button').forEach(function (button) {
+                var text = button.textContent.trim().toLowerCase();
+                if (faLocale.buttonText[text]) { button.textContent = faLocale.buttonText[text]; }
+            });
+            persianizeMini();
+        }
+        function render() {
+            var first = jalaliToGregorian(view.y, view.m, 1);
+            var next = view.m === 12 ? jalaliToGregorian(view.y + 1, 1, 1) : jalaliToGregorian(view.y, view.m + 1, 1);
+            if (!first || !next) { return; }
+            var count = Math.round((next - first) / 86400000), offset = (first.getDay() + 1) % 7;
+            var html = '<div class="akzfa-jalali-head"><div class="akzfa-jalali-title">' + jalaliMonths[view.m - 1] + ' ' + toFa(view.y) +
+                '</div><div class="akzfa-jalali-nav"><button type="button" data-akzfa-jalali="prev" aria-label="ماه قبل">‹</button>' +
+                '<button type="button" data-akzfa-jalali="today">امروز</button><button type="button" data-akzfa-jalali="next" aria-label="ماه بعد">›</button></div></div><div class="akzfa-jalali-grid">';
+            calendarDays.forEach(function (day) { html += '<div class="akzfa-jalali-dow">' + day + '</div>'; });
+            for (var i = 0; i < offset; i++) { html += '<span aria-hidden="true"></span>'; }
+            for (var day = 1; day <= count; day++) {
+                var date = addCalendarDays(first, day - 1), key = gregorianText(date);
+                var classes = 'akzfa-jalali-day' + (date.getDay() === 5 ? ' akzfa-jalali-holiday' : '') + (key === gregorianText(new Date()) ? ' akzfa-jalali-today' : '');
+                html += '<button type="button" class="' + classes + '" data-akzfa-jalali="pick" data-date="' + key + '" aria-pressed="' + (key === selected) + '" aria-label="' + jalaliText(date) + '، ' + key + '">' + toFa(day) + '</button>';
+            }
+            card.innerHTML = html + '</div><div class="akzfa-jalali-foot">تقویم هجری شمسی</div>';
+        }
+        card.addEventListener('click', function (event) {
+            var action = closest(event.target, '[data-akzfa-jalali]'); if (!action) { return; }
+            event.preventDefault(); var what = action.getAttribute('data-akzfa-jalali');
+            if (what === 'pick') { selectDate(parseCalendarField(action.getAttribute('data-date'))); }
+            else if (what === 'today') { selectDate(dateOnly(new Date())); }
+            else {
+                var index = view.y * 12 + view.m - 1 + (what === 'prev' ? -1 : 1);
+                view = { y: Math.floor(index / 12), m: index % 12 + 1 }; render();
+            }
+            var focus = card.querySelector(what === 'pick' ? '[aria-pressed="true"]' : '[data-akzfa-jalali="' + what + '"]');
+            if (focus) { focus.focus(); }
+        });
+        render(); host.appendChild(card); syncMain();
+        // Redraws also happen from cached navigation, without an Ajax request.
+        if (window.MutationObserver) {
+            if (mini) { new MutationObserver(persianizeMini).observe(mini, { childList: true, subtree: true }); }
+            if (main) { new MutationObserver(syncMain).observe(main, { childList: true, subtree: true }); }
+        }
+    }
+    function initEventDatePickers() {
+        var dialog = doc.querySelector('#calendar_eventdialog');
+        if (!dialog || dialog.dataset.akzfaDates) { return; }
+        dialog.dataset.akzfaDates = 'true';
+        var hasJalali = !!jalaliParts(new Date()), controllers = [], activePicker = null;
+        var table = dialog.querySelector('table');
+        if (table) { table.classList.add('akzfa-event-fields'); table.classList.remove('akzfa-form-table'); }
+        // Associate Issabel's existing field captions without replacing its controls.
+        all('input:not([type="hidden"]), select, textarea', dialog).forEach(function (field, index) {
+            var row = closest(field, 'tr'), caption = row && row.querySelector('b');
+            if (!field.id) { field.id = 'akzfa-event-field-' + index; }
+            if (caption && !field.labels.length) {
+                if (!caption.id) { caption.id = field.id + '-label'; }
+                field.setAttribute('aria-labelledby', caption.id);
+            }
+        });
+        
+        var error = doc.createElement('p');
+        error.id = 'akzfa-event-date-error'; error.className = 'akzfa-date-error'; error.hidden = true;
+        error.setAttribute('role', 'alert');
+        var endRow = closest(dialog.querySelector('input[name="to"]'), 'tr');
+        if (endRow) { endRow.lastElementChild.appendChild(error); }
+        function validateRange() {
+            var start = dialog.querySelector('input[name="date"]'), end = dialog.querySelector('input[name="to"]');
+            var from = start && parseCalendarField(start.value), to = end && parseCalendarField(end.value);
+            var invalid = controllers.some(function (c) { return c.invalid(); });
+            var message = invalid || !from || !to ? 'تاریخ و ساعت معتبر وارد کنید.' : from > to ? 'تاریخ و ساعت پایان باید برابر یا بعد از شروع باشد.' : '';
+            error.textContent = message; error.hidden = !message;
+            controllers.forEach(function (c) { c.markRange(!!message); });
+            return !message;
+        }
+        all('input[name="date"], input[name="to"]', dialog).forEach(function (input) {
+            var endpoint = input.name === 'date' ? 'شروع' : 'پایان';
+            var wrap = doc.createElement('div'); wrap.className = 'akzfa-jdate-wrap';
+            input.parentNode.insertBefore(wrap, input);
+            // Hide the module's datetimepicker input and its trigger together.
+            // Its name, id and value remain available to existing module code.
+            input.hidden = true; input.tabIndex = -1; wrap.appendChild(input);
+            var nativeTrigger = wrap.nextElementSibling;
+            if (nativeTrigger && nativeTrigger.matches('.ui-datepicker-trigger, .datepicker-button')) { nativeTrigger.hidden = true; }
+            function fieldBox(kind, labelText, type) {
+                var box = doc.createElement('div'); box.className = 'akzfa-jdate-' + kind;
+                var label = doc.createElement('label'), field = doc.createElement('input');
+                field.id = 'akzfa-' + input.name + '-' + kind; field.type = type || 'text'; field.autocomplete = 'off';
+                field.dir = 'ltr'; label.htmlFor = field.id; label.textContent = labelText;
+                field.setAttribute('aria-label', labelText + ' ' + endpoint);
+                field.setAttribute('aria-describedby', error.id);
+                box.appendChild(label); box.appendChild(field); wrap.appendChild(box);
+                return field;
+            }
+            var jalali = hasJalali ? fieldBox('jalali', 'شمسی') : null;
+            var gregorian = fieldBox('gregorian', 'میلادی');
+            var time = fieldBox('time', 'ساعت', 'time'); time.step = '60';
+            gregorian.placeholder = 'YYYY-MM-DD';
+            if (jalali) { jalali.placeholder = 'سال/ماه/روز'; }
+            var toggle = doc.createElement('button'); toggle.type = 'button'; toggle.className = 'akzfa-jdate-toggle';
+            toggle.innerHTML = '<i class="fa fa-calendar" aria-hidden="true"></i><span>انتخاب تاریخ</span>';
+            toggle.setAttribute('aria-label', 'انتخاب تاریخ ' + endpoint); toggle.setAttribute('aria-expanded', 'false');
+            var pop = doc.createElement('div'); pop.id = 'akzfa-date-picker-' + input.name;
+            pop.className = 'akzfa-jdate-pop'; pop.hidden = true; pop.setAttribute('role', 'group'); pop.setAttribute('aria-label', 'تقویم انتخاب تاریخ ' + endpoint);
+            toggle.setAttribute('aria-controls', pop.id); wrap.appendChild(toggle); wrap.appendChild(pop);
+            var mode = hasJalali ? 'jalali' : 'gregorian', viewDate = dateOnly(new Date()), selected = null, sourceValue;
+            var controls = [jalali, gregorian, time].filter(Boolean);
+            function invalid() { return controls.some(function (field) { return !!field.validationMessage; }); }
+            function sync() {
+                var date = parseCalendarField(input.value); sourceValue = input.value;
+                selected = date ? dateOnly(date) : null;
+                gregorian.value = date ? gregorianText(date) : '';
+                if (jalali) { jalali.value = date ? jalaliText(date) : ''; }
+                time.value = date ? datePad(date.getHours()) + ':' + datePad(date.getMinutes()) : '';
+                controls.forEach(function (field) { field.setCustomValidity(''); field.removeAttribute('aria-invalid'); });
+                if (selected) { viewDate = selected; }
+            }
+            function writeDate(date) {
+                var old = parseCalendarField(input.value);
+                var hhmm = time.value || (old ? datePad(old.getHours()) + ':' + datePad(old.getMinutes()) : '00:00');
+                input.value = gregorianText(date) + ' ' + hhmm;
+                sync(); input.dispatchEvent(new Event('change', { bubbles: true })); validateRange();
+            }
+            function commitField(field) {
+                var date;
+                if (field === jalali) {
+                    var m = /^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})$/.exec(toEn(field.value).trim());
+                    date = m && jalaliToGregorian(Number(m[1]), Number(m[2]), Number(m[3]));
+                } else { date = parseCalendarField(gregorian.value); }
+                var validTime = /^\d{2}:\d{2}$/.test(time.value);
+                if (!date || !validTime) {
+                    field.setCustomValidity('تاریخ و ساعت معتبر وارد کنید.'); field.setAttribute('aria-invalid', 'true'); validateRange(); return;
+                }
+                field.setCustomValidity(''); writeDate(date);
+            }
+            function close(returnFocus) {
+                pop.hidden = true; toggle.setAttribute('aria-expanded', 'false');
+                if (activePicker === controller) { activePicker = null; }
+                if (returnFocus) { toggle.focus(); }
+            }
+            function viewParts() { return mode === 'jalali' ? jalaliParts(viewDate) : { y: viewDate.getFullYear(), m: viewDate.getMonth() + 1, d: viewDate.getDate() }; }
+            function monthStart(y, m) { return mode === 'jalali' ? jalaliToGregorian(y, m, 1) : new Date(y, m - 1, 1, 12); }
+            function moveMonth(step) {
+                var parts = viewParts(), index = parts.y * 12 + parts.m - 1 + step;
+                viewDate = monthStart(Math.floor(index / 12), index % 12 + 1); render();
+            }
+            function render() {
+                var parts = viewParts(), first = monthStart(parts.y, parts.m);
+                var next = monthStart(parts.m === 12 ? parts.y + 1 : parts.y, parts.m === 12 ? 1 : parts.m + 1);
+                var count = Math.round((next - first) / 86400000), offset = (first.getDay() + 1) % 7;
+                var names = mode === 'jalali' ? jalaliMonths : faLocale.monthNames;
+                var start = parseCalendarField(dialog.querySelector('input[name="date"]').value);
+                var end = parseCalendarField(dialog.querySelector('input[name="to"]').value);
+                var today = gregorianText(new Date());
+                var html = '<div class="akzfa-date-modes" role="group" aria-label="نوع تقویم">';
+                if (hasJalali) { html += '<button type="button" data-calendar-mode="jalali" aria-pressed="' + (mode === 'jalali') + '">شمسی</button>'; }
+                html += '<button type="button" data-calendar-mode="gregorian" aria-pressed="' + (mode === 'gregorian') + '">میلادی</button></div>';
+                html += '<div class="akzfa-jalali-head"><button type="button" data-akzfa-jdate="prev" aria-label="ماه قبل">›</button><select data-date-month aria-label="ماه">';
+                names.forEach(function (name, index) { html += '<option value="' + (index + 1) + '"' + (parts.m === index + 1 ? ' selected' : '') + '>' + name + '</option>'; });
+                html += '</select><select data-date-year aria-label="سال">';
+                for (var y = parts.y - 100; y <= parts.y + 100; y++) { html += '<option value="' + y + '"' + (y === parts.y ? ' selected' : '') + '>' + toFa(y) + '</option>'; }
+                html += '</select><button type="button" data-akzfa-jdate="next" aria-label="ماه بعد">‹</button></div><div class="akzfa-jalali-grid" role="group" aria-label="روزهای ماه">';
+                calendarDays.forEach(function (day) { html += '<span class="akzfa-jalali-dow">' + day + '</span>'; });
+                for (var empty = 0; empty < offset; empty++) { html += '<span aria-hidden="true"></span>'; }
+                for (var day = 1; day <= count; day++) {
+                    var date = addCalendarDays(first, day - 1), key = gregorianText(date);
+                    var isSelected = !!selected && key === gregorianText(selected), inRange = start && end && date >= dateOnly(start) && date <= dateOnly(end);
+                    var disabled = input.name === 'to' && start && date < dateOnly(start);
+                    var classes = 'akzfa-jalali-day' + (inRange ? ' akzfa-date-in-range' : '') + (isSelected ? ' akzfa-jalali-selected' : '') + (key === today ? ' akzfa-jalali-today' : '') + (date.getDay() === 5 ? ' akzfa-jalali-holiday' : '');
+                    var caption = (hasJalali ? jalaliText(date) + '، ' : '') + gregorianText(date);
+                    html += '<button type="button" class="' + classes + '" data-akzfa-jdate="pick" data-date="' + key + '" data-day="' + day + '" aria-label="' + caption + '" aria-pressed="' + isSelected + '"' + (key === today ? ' aria-current="date"' : '') + (disabled ? ' disabled' : '') + ' tabindex="-1">' + toFa(day) + '</button>';
+                }
+                html += '</div><div class="akzfa-jdate-foot"><span>با انتخاب روز، تاریخ ثبت می‌شود.</span><button type="button" data-akzfa-jdate="today">امروز</button><button type="button" data-akzfa-jdate="close">بستن</button></div>';
+                pop.innerHTML = html;
+                var focusDay = pop.querySelector('.akzfa-jalali-selected:not(:disabled)') || pop.querySelector('[data-akzfa-jdate="pick"]:not(:disabled)');
+                if (focusDay) { focusDay.tabIndex = 0; }
+            }
+            function open() {
+                if (activePicker && activePicker !== controller) { activePicker.close(false); }
+                if (sourceValue !== input.value) { sync(); }
+                viewDate = selected || dateOnly(new Date());
+                if (input.name === 'to') {
+                    var start = parseCalendarField(dialog.querySelector('input[name="date"]').value);
+                    if (start && viewDate < dateOnly(start)) { viewDate = dateOnly(start); }
+                }
+                render(); pop.hidden = false; activePicker = controller; toggle.setAttribute('aria-expanded', 'true');
+                var first = pop.querySelector('[tabindex="0"]'); if (first) { first.focus(); }
+            }
+            var controller = { close: close, sync: sync, invalid: invalid, markRange: function (bad) { wrap.classList.toggle('akzfa-date-invalid', bad); } };
+            controllers.push(controller);
+            toggle.addEventListener('click', function () { pop.hidden ? open() : close(true); });
+            pop.addEventListener('click', function (event) {
+                var action = closest(event.target, '[data-akzfa-jdate], [data-calendar-mode]'); if (!action) { return; }
+                var modeValue = action.getAttribute('data-calendar-mode'), what = action.getAttribute('data-akzfa-jdate');
+                if (modeValue) { mode = modeValue; render(); pop.querySelector('[data-calendar-mode="' + mode + '"]').focus(); }
+                else if (what === 'prev' || what === 'next') { moveMonth(what === 'prev' ? -1 : 1); pop.querySelector('[data-akzfa-jdate="' + what + '"]').focus(); }
+                else if (what === 'today') { viewDate = dateOnly(new Date()); render(); }
+                else if (what === 'close') { close(true); }
+                else if (what === 'pick') { writeDate(parseCalendarField(action.getAttribute('data-date'))); close(true); }
+            });
+            pop.addEventListener('change', function (event) {
+                if (!event.target.matches('[data-date-month], [data-date-year]')) { return; }
+                var selector = event.target.hasAttribute('data-date-month') ? '[data-date-month]' : '[data-date-year]';
+                viewDate = monthStart(Number(pop.querySelector('[data-date-year]').value), Number(pop.querySelector('[data-date-month]').value));
+                render(); pop.querySelector(selector).focus();
+            });
+            pop.addEventListener('keydown', function (event) {
+                var button = closest(event.target, '[data-date]'); if (!button) { return; }
+                var date = parseCalendarField(button.getAttribute('data-date')), delta = { ArrowRight: -1, ArrowLeft: 1, ArrowUp: -7, ArrowDown: 7 }[event.key];
+                if (event.key === 'Home') { delta = -((date.getDay() + 1) % 7); }
+                if (event.key === 'End') { delta = 6 - ((date.getDay() + 1) % 7); }
+                if (delta === undefined && event.key !== 'PageUp' && event.key !== 'PageDown') { return; }
+                event.preventDefault();
+                if (delta !== undefined) { viewDate = addCalendarDays(date, delta); render(); }
+                else { moveMonth(event.key === 'PageUp' ? -1 : 1); }
+                var target = pop.querySelector('[data-date="' + gregorianText(viewDate) + '"]:not(:disabled)') || pop.querySelector('[data-date]:not(:disabled)');
+                if (target) { all('[data-date]', pop).forEach(function (day) { day.tabIndex = -1; }); target.tabIndex = 0; target.focus(); }
+            });
+            controls.forEach(function (field) { field.addEventListener('change', function () { commitField(field); }); });
+            input.addEventListener('change', function () { sync(); });
+            sync();
+        });
+        function syncDialog() { controllers.forEach(function (c) { c.close(false); c.sync(); }); error.hidden = true; controllers.forEach(function (c) { c.markRange(false); }); }
+        if (window.jQuery) {
+            window.jQuery(dialog).on('dialogopen.akzfaCalendar', function () {
+                syncDialog();
+                var frame = closest(dialog, '.ui-dialog');
+                if (frame) { frame.setAttribute('aria-modal', 'true'); }
+                var name = dialog.querySelector('input[name="event"]'); if (name) { name.focus(); }
+            }).on('dialogclose.akzfaCalendar', syncDialog);
+        }
+        dialog.addEventListener('akzfa:calendar-open', syncDialog);
+        // Capture Escape before jQuery UI so closing a picker keeps the event open.
+        doc.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && activePicker) { event.preventDefault(); event.stopImmediatePropagation(); activePicker.close(true); }
+        }, true);
+        doc.addEventListener('click', function (event) {
+            if (activePicker && !closest(event.target, '.akzfa-jdate-wrap')) { activePicker.close(false); }
+            var frame = closest(dialog, '.ui-dialog'), save = frame && frame.querySelector('.ui-dialog-buttonset button');
+            if (save && (event.target === save || save.contains(event.target)) && !validateRange()) {
+                event.preventDefault(); event.stopImmediatePropagation();
+                var invalidField = dialog.querySelector('.akzfa-jdate-wrap [aria-invalid="true"]') || dialog.querySelector('#akzfa-to-gregorian');
+                if (invalidField) { invalidField.focus(); }
+            }
+        }, true);
+    }
+    function init() {
+        var css = doc.querySelector('link[href*="akzfa-tailwind.css"]'); frameStyleHref = css && css.href;
+        installCalendarLocale();
+        initMenu(); initSearch(); initPassword(); initUserMenu(); patchModalCentering(); initModal(); enhanceContent(); applyTheme(storageGet(), false);
+        initOctets(); initMapTooltips(); initJalali(); initEventDatePickers();
+        doc.addEventListener('click', function (event) {
+            var toggle = closest(event.target, '.akzfa-theme-toggle');
+            if (toggle) { event.preventDefault(); toggleTheme(); }
+            var burger = closest(event.target, '.akzfa-topbar-burger');
+            if (burger) { event.preventDefault(); openSidebar(burger); }
+            if (closest(event.target, '.akzfa-sidebar-close, #akzfa-sidebar-overlay')) { event.preventDefault(); closeSidebar(); }
+        });
+        doc.addEventListener('keydown', function (event) {
+            if (!doc.body.classList.contains('akzfa-sidebar-open')) { return; }
+            if (event.key === 'Escape') { event.preventDefault(); closeSidebar(); }
+            else { trapTab(event, sidebar); }
+        });
+        window.addEventListener('storage', function (event) { if (event.key === themeKey) { applyTheme(event.newValue, false); } });
+        var content = doc.getElementById('neo-contentbox') || doc.querySelector('.akzfa-cdr-page');
+        if (content && window.MutationObserver) {
+            new MutationObserver(function (records) {
+                if (!records.some(function (record) { return Array.prototype.some.call(record.addedNodes, function (node) { return node.nodeType === 1 && !closest(node, 'svg'); }); })) { return; }
+                clearTimeout(uiTimer); uiTimer = setTimeout(enhanceContent, 60);
+            }).observe(content, { childList: true, subtree: true });
+        }
+        if (window.jQuery) { window.jQuery(doc).on('draw.dt init.dt', function () { enhanceContent(); themeCharts(); }); }
+    }
+    window.AKZUI = { applyTheme: applyTheme, toggleTheme: toggleTheme, currentTheme: currentTheme, closeSidebar: closeSidebar, refresh: enhanceContent, fcLocale: faLocale };
+    if (window.jQuery) { window.jQuery(init); }
+    else if (doc.readyState === 'loading') { doc.addEventListener('DOMContentLoaded', init); }
+    else { init(); }
+})();

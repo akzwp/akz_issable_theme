@@ -1,0 +1,2 @@
+/* Compatibility entry; edit ui/*.css and run npm run build:css. */
+@import url("akzfa-tailwind.css?v=7.1.3");
