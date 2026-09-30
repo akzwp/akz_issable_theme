@@ -1,35 +1,18 @@
-# akz_issable_theme — AKZ Themes for Issabel
+# akz_issable_theme — English branch (akz theme)
 
-Professional UI themes for the **Issabel** PBX web panel — Persian (RTL) and English (LTR) editions
-of the same architecture, plus upstream proposals.
+English, left-to-right theme for the Issabel web panel. This branch contains only the English
+theme package; the Persian edition lives on the [`fa`](https://github.com/akzwp/akz_issable_theme/tree/fa)
+branch, and shared docs + upstream proposals on
+[`main`](https://github.com/akzwp/akz_issable_theme/tree/main).
 
-| Directory | What it is |
-|---|---|
-| [`fa-theme/`](fa-theme/README.md) | **Persian RTL theme `akzfa`** — Vazirmatn font, dark/light, responsive, installer + uninstaller, Tailwind build sources |
-| [`en-theme/`](en-theme/README.md) | **English LTR theme `akz`** — same architecture, system fonts |
-| [`proposals/`](proposals/00-INDEX.md) | Professional proposals for the upstream repos (`IssabelFoundation/framework`, `voipiran/VOIZ`) |
-| [`ROADMAP.md`](ROADMAP.md) | Step-by-step plan: branches → validation → upstream PRs |
+## Install on an existing Issabel server
 
-**Branch layout of this repository:**
+Copy this branch's content to the server, then:
 
-| Branch | Content |
-|---|---|
-| `main` | This index: shared sources, docs, proposals |
-| `fa` | Persian theme package only |
-| `en` | English theme package only |
-
-## Quick start (Persian theme)
-
-```bash
-sudo bash fa-theme/contrib/akzfa-theme/install.sh --activate
-# Sign out and sign in again.
+```sh
+sudo bash en-theme/contrib/akz-theme/install.sh --activate
 ```
 
-Details: [`fa-theme/README.md`](fa-theme/README.md) · Architecture: [`fa-theme/ARCHITECTURE.md`](fa-theme/ARCHITECTURE.md)
-Compatibility & test plan: [`fa-theme/COMPATIBILITY.md`](fa-theme/COMPATIBILITY.md)
+Sign out and sign in again. Rollback: `sudo bash en-theme/contrib/akz-theme/uninstall.sh`.
 
-## License
-
-GPL-2.0-or-later (matching the Issabel framework) — see [`LICENSE`](LICENSE).
-Bundled fonts: Vazirmatn, SIL OFL 1.1 (license text included in `fa-theme/contrib/akzfa-theme/LICENSES/`).
-"AKZ" identifies the interface contribution; it does not claim ownership of Issabel.
+Details: [`en-theme/README.md`](en-theme/README.md) · License: GPL-2.0-or-later (see `LICENSE`).
