@@ -4,12 +4,10 @@
 *.tpl text eol=lf
 *.css text eol=lf
 *.js text eol=lf
-*.conf text eol=lf
+*.md text eol=lf
 *.png binary
-*.gif binary
 *.jpg binary
-*.ico binary
+*.gif binary
 *.woff binary
 *.woff2 binary
 *.ttf binary
-*.eot binary

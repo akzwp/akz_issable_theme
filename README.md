@@ -1,31 +1,31 @@
-# تم فارسی ایزابل — AKZ (شاخه fa)
+# AKZ — Persian / RTL
 
-تم راست‌چین و فارسی برای پنل وب ایزابل — با تم دارک/لایت، فونت وزیرمتن، جستجوی زنده ماژول‌ها و
-ریسپانسیو کامل موبایل. این شاخه فقط پکیج تم فارسی را دارد؛ نسخه انگلیسی روی شاخه
-[`en`](https://github.com/akzwp/akz_issable_theme/tree/en) و اسناد مشترک + پروپوزال‌ها روی
-[`main`](https://github.com/akzwp/akz_issable_theme/tree/main) هستند.
+A presentation theme for an existing Issabel PBX, distributed as `akzfa`. It provides light/dark appearance, responsive navigation and module search, consistent forms and tables, and calendar dialog controls. Existing framework authentication and module processing remain in control.
 
-## نصب روی سرور ایزابل
+## نصب / Install
 
-```bash
-# ۱) دریافت مخزن
-git clone -b fa https://github.com/akzwp/akz_issable_theme.git
-cd akz_issable_theme
+برای نصب، شاخهٔ fa را روی سرور دریافت و استخراج کنید و دستور زیر را در پوشهٔ آن اجرا کنید. نیازی به Node.js یا npm نیست. پس از نصب یک بار خارج و دوباره وارد شوید.
 
-# ۲) نصب تم فارسی + فعال‌سازی (زبان fa و تم akzfa انتخاب می‌شود)
-sudo bash fa-theme/contrib/akzfa-theme/install.sh --activate
+Download and extract the [fa branch](https://github.com/akzwp/akz_issable_theme/tree/fa) on the server, then run from the extracted directory:
 
-# ۳) خارج شوید و دوباره وارد پنل شوید
+```sh
+sudo bash install.sh
 ```
 
-بازگردانی: `sudo bash fa-theme/contrib/akzfa-theme/uninstall.sh`
+Installation and language selection are unattended. No Node.js, npm, dependency download or CSS build is needed on the server. Sign out and sign in again.
 
-## مجوز
+[Requirements, installation scope and recovery](INSTALL.md) · [Upstream proposal](PULL_REQUEST.md)
 
-GPL-2.0-or-later (مطابق فریم‌ورک ایزابل) — فونت وزیرمتن: SIL OFL 1.1
+`sudo bash install.sh --no-activate` installs files without selecting the theme. `sudo bash uninstall.sh` restores the prior selection if this theme is active and retains files for recovery.
 
-## مستندات
+## Source and maintenance
 
-- راهنمای کامل و توسعه: [`fa-theme/README.md`](fa-theme/README.md)
-- معماری فنی: [`fa-theme/ARCHITECTURE.md`](fa-theme/ARCHITECTURE.md)
-- سازگاری و چک‌لیست تست: [`fa-theme/COMPATIBILITY.md`](fa-theme/COMPATIBILITY.md)
+The authoring source is [main/fa-theme](https://github.com/akzwp/akz_issable_theme/tree/main/fa-theme). This branch is its complete installable package. Edit on main, commit source and generated CSS together, then export this directory to the corresponding language branch. Optional development tooling in `contrib/akzfa-theme` is never executed by the installer.
+
+The source reference is the local VOIZ theme/vitenant and ui snapshot. Calendar controls, radio buttons and switches are aligned with the newer local work; namespacing and direction-specific behavior are retained. Vazirmatn fonts are served locally. Existing Persian translations and calendar support are prerequisites; this is not a language pack.
+
+## Status and licensing
+
+This revision has not been tested. Browser and server evaluation will be performed by the owner before proposing a default-theme migration. No accessibility, performance or security certification is claimed.
+
+Retain [LICENSE](LICENSE), file headers and [third-party notices](contrib/akzfa-theme/THIRD_PARTY_NOTICES.md). AKZ identifies the interface contribution, not authorship of the whole framework or upstream endorsement.
