@@ -1,4 +1,4 @@
-/* AKZ Persian (akzfa) — single Tailwind entry point. npm run build:css */
+/* AKZ / AKZ — single Tailwind entry point. npm run build:css */
 @import "./tokens.css";
 @import "./shell.css";
 @import "./components.css";

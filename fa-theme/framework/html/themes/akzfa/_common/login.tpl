@@ -5,10 +5,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="AKZ - VOIPIRAN + AKZ | akzwp.com" />
+        <meta name="description" content="AKZ Persian interface for Issabel">
         <meta name="author" content="VOIPIRAN + AKZ" />
 
-        <title>{$PAGE_NAME} - AKZ | VOIPIRAN + AKZ | akzwp.ir</title>
+        <title>Issabel · AKZ</title>
 
         <!-- AKZ: pre-paint theme init (avoids flash of wrong theme) -->
         <script type="text/javascript">
@@ -19,13 +19,15 @@
                 document.documentElement.setAttribute('data-theme', t);
             })();
         </script>
+    <link rel="stylesheet" href="{$WEBPATH}libs/font-icons/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{$WEBPATH}libs/font-icons/entypo/css/entypo.css">
 
         <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/bootstrap.css">
         <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/neon-theme.css">
         <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/neon-forms.css">
         <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/font-awesome-animation.min.css">
         <!-- AKZ: UI/UX layer (loaded last) -->
-        <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=7.1.7">
+        <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.0">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
@@ -97,10 +99,8 @@
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/resizeable.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-api.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/jquery.validate.min.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-login.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-custom.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-demo.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=7.1.7"></script>
+        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=2.0.0"></script>
 
         <!-- نمایش خطا -->
         <script type="text/javascript">

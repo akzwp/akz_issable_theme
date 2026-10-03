@@ -1,14 +1,10 @@
-# AKZ theme development
+# AKZ development sources
 
-The runtime directory is `../../framework/html/themes/akz` relative to this directory. Keep both directories in the same checkout.
+Server installation: run `sudo bash install.sh` from the package root. Read [INSTALL.md](../../INSTALL.md) for prerequisites, supported paths and rollback behavior.
 
-## Installation on Issabel
+## Optional CSS editing
 
-From the repository root, run `sudo bash contrib/akz-theme/install.sh --activate` to install the optional theme and select English. Omit `--activate` to preserve the current theme and language. The script requires the existing standard Issabel layout and does not install additional applications or alter telephony/network settings.
-
-Run `sudo bash contrib/akz-theme/uninstall.sh` to archive the installed theme and restore the saved selection if `akz` is still active. Previous selections and asset backups are kept in `/var/lib/issabel/akz-theme` with access restricted to root. Sign out and sign in after changing the selected theme.
-
-## Editing and building
+The server consumes `framework/html/themes/akz/css/akz-tailwind.css` directly. JavaScript is readable source. Only developers changing CSS need the pinned build tooling:
 
 ```sh
 cd contrib/akz-theme
@@ -16,16 +12,6 @@ npm ci --ignore-scripts
 npm run build:css
 ```
 
-Source CSS lives in `ui/`; `ui/akz-theme.css` is the entry point. The output is `../../framework/html/themes/akz/css/akz-tailwind.css`. Tailwind preflight is disabled to preserve legacy widget behavior. Commit the source and compiled CSS together. The server uses prebuilt files and does not need Node.js.
+Commit the generated CSS with changes to `ui/*.css`; do not deploy raw Tailwind directives. Preflight is disabled and generated utility classes use the `tw-` prefix. Theme CSS loads after framework/module headers.
 
-JavaScript lives in the runtime theme's `js/akz-ui.js` and `js/akz-embedded.js`. English labels and Gregorian widget defaults are defined there. Stock framework localization supplies module labels. The runtime helpers do not translate or rewrite user data.
-
-## Contribution scope
-
-This is an additive English/LTR theme. The framework default theme, PBX application files, authentication handlers, menu authorization, and module backends remain unchanged. The optional installation script changes the selected theme/language only when explicitly activated.
-
-No browser, automated, installation, application, or compatibility tests were run while preparing this export. Validate on a disposable server and document the actual environment before requesting upstream approval. The upstream release specification must be reviewed separately with maintainers before including this theme in an RPM release.
-
-## Notices
-
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [LICENSES](LICENSES). Preserve file-level copyright and license notices when redistributing or contributing these files.
+`manage.sh` is shared verbatim between the two editions; the wrappers select a fixed theme and operation. Keep both copies synchronized on main. Runtime files are independent of this development toolchain.

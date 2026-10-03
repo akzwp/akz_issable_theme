@@ -315,7 +315,7 @@
         <div class="akzfa-topbar-user">
             <a href="#" class="akzfa-user-link dropdown-toggle" data-toggle="dropdown">
                 <img style="border:0px" src="/themes/{$THEMENAME}/images/Icon-user.png" alt="" />
-                <span class="akzfa-user-name">{$USER_LOGIN}</span>
+                <span class="akzfa-user-name">{$USER_LOGIN|escape:html}</span>
                 <i class="fa fa-angle-down akzfa-user-caret"></i>
             </a>
             <ul class="dropdown-menu">

@@ -68,7 +68,7 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
     }
 
 // Theme assets are self-contained; no distribution-specific configuration.
-$version = '1.0.0';
+$version = '2.0.0';
 
     $smarty->assign('arrMainMenu', $arrMainMenu);
     $smarty->assign("LANG", $lang);

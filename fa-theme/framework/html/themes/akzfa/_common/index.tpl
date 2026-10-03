@@ -4,8 +4,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="AKZ - VOIPIRAN + AKZ | akzwp.com | akzwp.ir" />
-        <title>AKZ | VOIPIRAN + AKZ | akzwp.ir</title>
+        <meta name="description" content="AKZ Persian interface for Issabel">
+        <title>Issabel · AKZ</title>
     <!-- AKZ: pre-paint theme init (avoids flash of wrong theme) -->
     <script type='text/javascript'>
         (function () {
@@ -15,6 +15,8 @@
             document.documentElement.setAttribute('data-theme', t);
         })();
     </script>
+    <link rel="stylesheet" href="{$WEBPATH}libs/font-icons/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{$WEBPATH}libs/font-icons/entypo/css/entypo.css">
 
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/bootstrap-rtl.min.css">     <!--  AKZ -->
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/neon-core-rtl.css">  <!--  AKZ -->
@@ -49,7 +51,7 @@
         {$HEADER}
     {$HEADER_MODULES}
     <!-- Final theme contract: loaded after module-provided styles. -->
-    <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=7.1.7">
+    <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.0">
     <!-- AKZ: Force Farsi calendar language if Calendar object exists -->
     <script type="text/javascript">
     (function () {
@@ -195,10 +197,8 @@ $(document).ready(function(e) {
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/resizeable.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-api.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/jquery.validate.min.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-login.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-custom.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-demo.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=7.1.7"></script>
+        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=2.0.0"></script>
     </div>
 </body>
 </html>

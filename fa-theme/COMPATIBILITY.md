@@ -1,33 +1,7 @@
-# سازگاری و برنامه تست (Compatibility & Test Plan)
+# Compatibility status
 
-## وضعیت فعلی (شفاف و واقعی)
+No browser, installation, automated or compatibility tests were run for this revision. No tested Issabel-version or browser matrix is claimed. CSS generation is a packaging step, not a runtime test.
 
-- CSS توزیع‌شده کامپایل شده است؛ چک‌های خودکار بیلد/کنتراست/DOM در مخزن منشأ پاس هستند.
-- **تست روی مرورگر واقعی و سرور ایزابل واقعی انجام نشده است.** پیش از استفاده عملیاتی، روی سرور آزمایشی بررسی کنید.
+The installer targets the standard Issabel paths and system commands in [INSTALL.md](INSTALL.md). Persian activation requires lang/fa.lang. The interface uses modern CSS, including custom properties, logical properties, :has(), :is() and dynamic viewport units. Compatibility with legacy browsers is not established.
 
-## ماتریس تست پیشنهادی (قبل از انتشار عمومی گسترده)
-
-| محیط | نسخه | وضعیت |
-|---|---|---|
-| Issabel ISO + Asterisk 16 (Issabel 4) | CentOS 7 | ⬜ باید تست شود |
-| Issabel ISO + Asterisk 18 (Issabel 5) | CentOS 7 | ⬜ باید تست شود |
-| مرورگرها | Chrome/Firefox جدید + یک مرورگر موبایل | ⬜ باید تست شود |
-
-## چک‌لیست عملکردی روی سرور آزمایشی
-
-1. نصب با `install.sh --activate` → لاگین مجدد → تم و زبان فارسی فعال شود.
-2. لاگین/لاگ‌اوت، تغییر رمز، پاپ‌آپ‌ها.
-3. داشبورد، CDR، ریز مکالمات، ضبط صوتی، فکس، دفترچه تلفن.
-4. تقویم + تاریخ جلالی، ارقام فارسی.
-5. صف‌ها، پنل اپراتور (FOP2)، پنل مانیتورینگ، Asternic.
-6. تنظیمات PBX (بخش تخصصی، انگلیسی) — نباید بشکند.
-7. تلفن تحت وب (`phone/phone.php`).
-8. تم دارک/لایت + ریسپانسیو موبایل (دراور سایدبار).
-9. `uninstall.sh` → بازگشت تم/زبان قبلی.
-10. آپگرید تم از روی نسخه نصب‌شده (آرشیو نسخه قبلی).
-
-## بازگردانی اضطراری
-
-- فایل `restore-settings.sql` در `/var/lib/issabel/akzfa-theme` مقدار قبلی `theme`/`language` را دارد:
-  `sudo sqlite3 /var/www/db/settings.db < /var/lib/issabel/akzfa-theme/restore-settings.sql`
-- حذف کامل: `sudo rm -rf /var/www/html/themes/akzfa` (بعد از اجرای دستور بالا).
+The owner will evaluate login/session behavior, authorization-visible navigation, representative forms/tables, calendars, embedded PBX modules, both appearance modes and install/upgrade/recovery on the intended release. Third-party module layouts and custom deployments may require additional adaptation.

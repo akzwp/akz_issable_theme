@@ -1,4 +1,4 @@
-/* Font paths resolve from the compiled themes/akzfa/css directory (runtime) — shipped compiled CSS uses the same relative path. */
+/* Font paths resolve from the compiled themes/akzfa/css directory. */
 @font-face { font-family: Vazirmatn; src: url('../fonts/vazirmatn/Vazirmatn-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: Vazirmatn; src: url('../fonts/vazirmatn/Vazirmatn-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: Vazirmatn; src: url('../fonts/vazirmatn/Vazirmatn-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }

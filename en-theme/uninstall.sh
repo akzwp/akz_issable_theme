@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
-exec bash "$script_dir/manage.sh" akzfa uninstall "$@"
+exec bash "$script_dir/contrib/akz-theme/uninstall.sh" "$@"

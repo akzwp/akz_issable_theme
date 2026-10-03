@@ -39,3 +39,5 @@ There are no intended changes to dialplans, accounts, call records, SIP credenti
 Source comparison and CSS generation were performed. **No tests were run for this revision**, as requested by the owner; no passing tests, measured accessibility scores or supported Issabel-version matrix are claimed. Before default adoption, the owner/maintainers need to supply results for login/logout and permissions, representative module forms and tables, calendar behavior, RTL/LTR layouts, keyboard operation, and installation/upgrade/recovery on their target release. These are pending acceptance criteria, not completed validation.
 
 Please review the directory names, release packaging, default-selection policy and migration timing.
+
+For VOIZ, see the [separate proposal](https://github.com/akzwp/akz_issable_theme/blob/main/proposals/02-voiz-upstream/PROPOSAL.md).

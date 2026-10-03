@@ -1,35 +1,28 @@
-# akz_issable_theme — AKZ Themes for Issabel
+# AKZ themes for Issabel and VOIZ
 
-Professional UI themes for the **Issabel** PBX web panel — Persian (RTL) and English (LTR) editions
-of the same architecture, plus upstream proposals.
+English/LTR and Persian/RTL editions of the AKZ interface, with compiled assets and unattended theme installation. This is the public source repository; it does not install a PBX.
 
-| Directory | What it is |
-|---|---|
-| [`fa-theme/`](fa-theme/README.md) | **Persian RTL theme `akzfa`** — Vazirmatn font, dark/light, responsive, installer + uninstaller, Tailwind build sources |
-| [`en-theme/`](en-theme/README.md) | **English LTR theme `akz`** — same architecture, system fonts |
-| [`proposals/`](proposals/00-INDEX.md) | Professional proposals for the upstream repos (`IssabelFoundation/framework`, `voipiran/VOIZ`) |
-| [`ROADMAP.md`](ROADMAP.md) | Step-by-step plan: branches → validation → upstream PRs |
+| Branch | Contents | Install from its extracted root |
+|---|---|---|
+| [en](https://github.com/akzwp/akz_issable_theme/tree/en) | English package, theme `akz` | `sudo bash install.sh` |
+| [fa](https://github.com/akzwp/akz_issable_theme/tree/fa) | Persian package, theme `akzfa` | `sudo bash install.sh` |
+| main | Both source packages and upstream proposals | `sudo bash install.sh en` or `sudo bash install.sh fa` |
 
-**Branch layout of this repository:**
+No Node.js, npm, asset compilation or downloads run on the server. Installation activates the edition and its language by default. Standard Issabel system tools and layout are required; the Persian edition also requires the existing Persian language pack. See [English installation](en-theme/INSTALL.md) or [Persian installation](fa-theme/INSTALL.md).
 
-| Branch | Content |
-|---|---|
-| `main` | This index: shared sources, docs, proposals |
-| `fa` | Persian theme package only |
-| `en` | English theme package only |
+## Changes in this revision
 
-## Quick start (Persian theme)
+- Restore the newer local calendar dialog and color-picker changes missing from the GitHub exports; align switches and radio buttons across both editions.
+- Correct English color labels, popup centering and stale selector namespaces; add missing Persian icon styles and remove unused login/demo script loading.
+- Generate the distributed CSS from the updated sources.
+- Provide root install/uninstall commands, shared edition locking, guarded activation, private backups and recovery that respects later administrator choices.
+- Exclude the inherited theme-local phone backend; existing PBX/webphone installations remain separate.
+- Export each language package to its own branch with its existing history retained.
 
-```bash
-sudo bash fa-theme/contrib/akzfa-theme/install.sh --activate
-# Sign out and sign in again.
-```
+## Proposals and maintenance
 
-Details: [`fa-theme/README.md`](fa-theme/README.md) · Architecture: [`fa-theme/ARCHITECTURE.md`](fa-theme/ARCHITECTURE.md)
-Compatibility & test plan: [`fa-theme/COMPATIBILITY.md`](fa-theme/COMPATIBILITY.md)
+[Issabel adoption proposal](proposals/01-issabel-framework/PROPOSAL.md) · [VOIZ adoption proposal](proposals/02-voiz-upstream/PROPOSAL.md) · [Maintenance workflow](ROADMAP.md)
 
-## License
+The goal is upstream default-theme adoption after review and owner evaluation. These are prepared proposal documents; no upstream pull requests have been opened. **No browser or other tests were run for this revision.** Source comparison and CSS generation do not establish runtime compatibility.
 
-GPL-2.0-or-later (matching the Issabel framework) — see [`LICENSE`](LICENSE).
-Bundled fonts: Vazirmatn, SIL OFL 1.1 (license text included in `fa-theme/contrib/akzfa-theme/LICENSES/`).
-"AKZ" identifies the interface contribution; it does not claim ownership of Issabel.
+Keep the original [license](LICENSE), component notices and file headers. AKZ identifies the interface contribution and does not imply endorsement by Issabel or VOIZ.

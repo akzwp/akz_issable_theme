@@ -1,87 +1,31 @@
-# تم فارسی ایزابل — AKZ (akzfa)
+# AKZ — Persian / RTL
 
-تم راست‌چین و فارسی، حرفه‌ای و مدرن برای پنل وب **ایزابل (Issabel)** — با تم دارک/لایت، فونت وزیرمتن،
-جستجوی زنده ماژول‌ها، ریسپانسیو کامل موبایل، و سازگاری با هسته ایزابل (بدون بازنویسی فایل‌های هسته).
+A presentation theme for an existing Issabel PBX, distributed as `akzfa`. It provides light/dark appearance, responsive navigation and module search, consistent forms and tables, and calendar dialog controls. Existing framework authentication and module processing remain in control.
 
-- زبان: **فارسی (fa) — RTL**
-- سازگاری: ایزابل ۴/۵ (CentOS 7) با تم استاندارد `tenant` موجود
-- مجوز: GPL-2.0-or-later (مطابق فریم‌ورک ایزابل) — فونت وزیرمتن: SIL OFL 1.1
+## نصب / Install
 
----
+برای نصب، شاخهٔ fa را روی سرور دریافت و استخراج کنید و دستور زیر را در پوشهٔ آن اجرا کنید. نیازی به Node.js یا npm نیست. پس از نصب یک بار خارج و دوباره وارد شوید.
 
-## نصب روی سرور ایزابل (توصیه‌شده)
+Download and extract the [fa branch](https://github.com/akzwp/akz_issable_theme/tree/fa) on the server, then run from the extracted directory:
 
-> پیش‌نیاز: نصب موجود ایزابل با چیدمان استاندارد `/var/www/html` و `/var/www/db/settings.db` و وجود تم `tenant`.
-
-```bash
-# ۱) دریافت مخزن
-git clone https://github.com/akzwp/akz_issable_theme.git
-cd akz_issable_theme
-
-# ۲) نصب تم فارسی + فعال‌سازی (زبان fa و تم akzfa انتخاب می‌شود)
-sudo bash fa-theme/contrib/akzfa-theme/install.sh --activate
-
-# ۳) خارج شوید و دوباره وارد پنل شوید (Sign out / Sign in)
+```sh
+sudo bash install.sh
 ```
 
-نصب بدون تغییر انتخاب فعلی (فقط کپی فایل‌ها):
+Installation and language selection are unattended. No Node.js, npm, dependency download or CSS build is needed on the server. Sign out and sign in again.
 
-```bash
-sudo bash fa-theme/contrib/akzfa-theme/install.sh
-```
+[Requirements, installation scope and recovery](INSTALL.md) · [Upstream proposal](PULL_REQUEST.md)
 
-بازگردانی تم و زبان قبلی:
+`sudo bash install.sh --no-activate` installs files without selecting the theme. `sudo bash uninstall.sh` restores the prior selection if this theme is active and retains files for recovery.
 
-```bash
-sudo bash fa-theme/contrib/akzfa-theme/uninstall.sh
-```
+## Source and maintenance
 
-نصب‌کننده:
-- فقط پوشه `/var/www/html/themes/akzfa` را می‌سازد؛ **هیچ فایل هسته‌ای بازنویسی نمی‌شود**.
-- قبل از تغییر `theme`/`language` در `settings.db`، مقدار قبلی را در `/var/lib/issabel/akzfa-theme` ذخیره می‌کند.
-- قفل نصب همزمان (`flock`)، استیجینگ اتمیک و بازگردانی خودکار در صورت خطا دارد.
-- تنظیمات تلفنی، شبکه، دسترسی‌ها و ماژول‌های شخص ثالث را تغییر نمی‌دهد.
+The authoring source is [main/fa-theme](https://github.com/akzwp/akz_issable_theme/tree/main/fa-theme). This branch is its complete installable package. Edit on main, commit source and generated CSS together, then export this directory to the corresponding language branch. Optional development tooling in `contrib/akzfa-theme` is never executed by the installer.
 
-## نصب دستی (بدون اسکریپت)
+The source reference is the local VOIZ theme/vitenant and ui snapshot. Calendar controls, radio buttons and switches are aligned with the newer local work; namespacing and direction-specific behavior are retained. Vazirmatn fonts are served locally. Existing Persian translations and calendar support are prerequisites; this is not a language pack.
 
-```bash
-sudo cp -a fa-theme/framework/html/themes/akzfa /var/www/html/themes/
-sudo chown -R asterisk:asterisk /var/www/html/themes/akzfa
-# سپس تم را از settings.db انتخاب کنید:
-sqlite3 /var/www/db/settings.db "UPDATE settings SET value='akzfa' WHERE key='theme'; UPDATE settings SET value='fa' WHERE key='language';"
-```
+## Status and licensing
 
-## توسعه و بازساخت CSS
+This revision has not been tested. Browser and server evaluation will be performed by the owner before proposing a default-theme migration. No accessibility, performance or security certification is claimed.
 
-روی سیستم توسعه (نه سرور):
-
-```bash
-cd fa-theme/contrib/akzfa-theme
-npm ci --ignore-scripts
-npm run build:css     # خروجی: ../../framework/html/themes/akzfa/css/akzfa-tailwind.css
-```
-
-سورس CSS در `ui/` است و نقطه ورود `ui/akzfa-theme.css`؛ خروجی کامپایل‌شده همراه سورس کامیت می‌شود
-و سرور به Node.js نیازی ندارد. Preflight تیلویند عمداً خاموش است تا ویجت‌های قدیمی ایزابل نشکنند.
-
-## شاخه‌بندی این مخزن
-
-| شاخه | محتوا | مخاطب |
-|---|---|---|
-| `fa` | همین پکیج — تم فارسی AKZ (`akzfa`) | کاربران ایرانی ایزابل |
-| `en` | نسخه انگلیسی/LTR (`akz`) — بدون فونت اختصاصی، با فونت سیستم | کاربران بین‌المللی |
-| `main` | ایندکس، اسناد مشترک و پروپوزال‌ها | همه |
-
-هر دو شاخه از یک معماری مشترک ساخته شده‌اند (بخش معماری را ببینید) و روی **یک** مخزن عمومی نگهداری می‌شوند.
-
-## وضعیت تست
-
-CSS توزیع‌شده کامپایل شده است؛ با این حال **تست مرورگر و نصب روی سرور واقعی** باید پیش از استفاده
-عملیاتی روی یک سرور آزمایشی انجام شود (چک‌لیست در `COMPATIBILITY.md`).
-
-## مجوزها و پیوست‌ها
-
-- کد تم: GPL-2.0-or-later — `contrib/akzfa-theme/LICENSES/GPL-2.0-or-later.txt`
-- سرصفحه‌های کپی‌رایت فریم‌ورک ایزابل و کتابخانه‌های قدیمی داخل فایل‌ها حفظ شده‌اند.
-- فونت وزیرمتن: SIL OFL 1.1 — `contrib/akzfa-theme/LICENSES/Vazirmatn/OFL-1.1.txt`
-- «AKZ» نام identification این رابط کاربری است، نه ادعای مالکیت فریم‌ورک ایزابل.
+Retain [LICENSE](LICENSE), file headers and [third-party notices](contrib/akzfa-theme/THIRD_PARTY_NOTICES.md). AKZ identifies the interface contribution, not authorship of the whole framework or upstream endorsement.

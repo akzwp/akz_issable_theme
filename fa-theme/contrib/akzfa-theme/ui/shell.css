@@ -128,7 +128,7 @@ html body .akzfa-topbar-user .dropdown-menu > li > a {
 }
 html body .akzfa-topbar-user .dropdown-menu > li > a:hover { background: var(--akzfa-primary-soft) !important; color: var(--akzfa-primary-text) !important; }
 html body .akzfa-topbar-user .dropdown-menu > li > a > :is(i, span) { font-size: inherit; }
-/* Only one authority decides visibility: bootstrap's .open or the akzfa fallback. */
+/* Only one authority decides visibility: bootstrap's .open or the Akzfa fallback. */
 html body .akzfa-topbar-user.akzfa-open > .dropdown-menu { display: block !important; }
 @media (max-width: 767px) {
   html body .akzfa-topbar-user .dropdown-menu {

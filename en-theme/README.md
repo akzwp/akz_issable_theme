@@ -1,47 +1,29 @@
-# Issabel AKZ English Theme
+# AKZ — English / LTR
 
-An independent English, left-to-right edition of the AKZ interface for an existing Issabel installation. The runtime theme is in `framework/html/themes/akz`; editable styles and installation tools are in `contrib/akz-theme`.
-
-The interface includes a responsive left sidebar, searchable navigation, light and dark appearances, readable tables and forms, accessible dialog controls, consistent notifications, and Gregorian calendar styling. Authentication and module requests remain under the installed Issabel framework's control.
+A presentation theme for an existing Issabel PBX, distributed as `akz`. It provides light/dark appearance, responsive navigation and module search, consistent forms and tables, and calendar dialog controls. Existing framework authentication and module processing remain in control.
 
 ## Install
 
-Copy this complete directory to an existing Issabel server. The installer expects the standard `/var/www/html` and `/var/www/db/settings.db` layout and an installed `tenant` theme.
+Download and extract the [en branch](https://github.com/akzwp/akz_issable_theme/tree/en) on the server, then run from the extracted directory:
 
 ```sh
-sudo bash contrib/akz-theme/install.sh --activate
+sudo bash install.sh
 ```
 
-This installs the separate `akz` theme and selects English. Sign out and sign in again. Omit `--activate` to install the files without changing the current theme or language. No build tools are required on the server; compiled CSS is included.
+Installation and language selection are unattended. No Node.js, npm, dependency download or CSS build is needed on the server. Sign out and sign in again.
 
-To restore the previous theme and language:
+[Requirements, installation scope and recovery](INSTALL.md) · [Upstream proposal](PULL_REQUEST.md)
 
-```sh
-sudo bash contrib/akz-theme/uninstall.sh
-```
+`sudo bash install.sh --no-activate` installs files without selecting the theme. `sudo bash uninstall.sh` restores the prior selection if this theme is active and retains files for recovery.
 
-The installer saves the previous selection under `/var/lib/issabel/akz-theme`. Upgrades archive the previous theme files. Uninstallation archives the package instead of deleting it, and preserves a different theme selection made after installation.
+## Source and maintenance
 
-## Build the CSS
+The authoring source is [main/en-theme](https://github.com/akzwp/akz_issable_theme/tree/main/en-theme). This branch is its complete installable package. Edit on main, commit source and generated CSS together, then export this directory to the corresponding language branch. Optional development tooling in `contrib/akz-theme` is never executed by the installer.
 
-Use a current Node.js LTS release on a development computer:
+The source reference is the local english_issable_akz snapshot. Calendar controls, radio buttons and switches are aligned with the newer local work; namespacing and direction-specific behavior are retained. Theme-owned labels use English and the sidebar uses LTR layout.
 
-```sh
-cd contrib/akz-theme
-npm ci --ignore-scripts
-npm run build:css
-```
+## Status and licensing
 
-Commit both the source styles and the generated `framework/html/themes/akz/css/akz-tailwind.css`. JavaScript is shipped as readable source.
+This revision has not been tested. Browser and server evaluation will be performed by the owner before proposing a default-theme migration. No accessibility, performance or security certification is claimed.
 
-## Scope and status
-
-This is a theme-only distribution. It does not install a PBX, bundled applications, sound packs, dialplan changes, database replacements, or a separate language pack. Stock Issabel supplies English module translations and Gregorian calendar behavior. User-entered names and messages are left unchanged. Embedded PBX pages are styled only while displayed inside this theme; their application files are not overwritten.
-
-The source was converted and the distributable CSS was generated. Browser, application, installation, automated, and compatibility tests have **not** been run. Compatibility with a particular Issabel build must be established on a separate server before deploying or marking a pull request ready for review.
-
-This package is a contribution candidate, not an official Issabel release or an accepted upstream change. See [PUSH_GUIDE.md](PUSH_GUIDE.md) for the submission workflow and [PULL_REQUEST.md](PULL_REQUEST.md) for a draft description.
-
-## Licensing
-
-Retain `LICENSE`, [third-party notices](contrib/akz-theme/THIRD_PARTY_NOTICES.md), and existing file headers. The framework-derived files retain their original notices; the inherited MIT notice is provided separately. AKZ identifies the interface contribution, not authorship of the entire Issabel framework.
+Retain [LICENSE](LICENSE), file headers and [third-party notices](contrib/akz-theme/THIRD_PARTY_NOTICES.md). AKZ identifies the interface contribution, not authorship of the whole framework or upstream endorsement.

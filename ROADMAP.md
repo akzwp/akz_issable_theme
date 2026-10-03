@@ -1,68 +1,26 @@
-# نقشه راه اجرایی — از همین مخزن تا PR های آپ‌استریم
+# Maintenance and contribution workflow
 
-> تمام مراحل با دستور واقعی و ترتیب علمی. هر مرحله‌ای که به تصمیم نگه‌دارنده آپ‌استریم وابسته است
-> مشخص شده. **commit/push فقط با تأیید خودت انجام می‌شود.**
+1. Keep `main/en-theme` and `main/fa-theme` as the authoring source. Runtime paths and the shared `manage.sh` implementation must stay aligned; each edition keeps its own direction, labels and asset namespace.
+2. Edit readable sources. When CSS changes, regenerate and commit its distribution file with the source. Node/npm are optional developer tools and never part of server installation.
+3. Commit the complete change on main. Export each language directory as the **root tree** of the corresponding `en` or `fa` branch, using the previous branch tip as the commit parent. This retains branch history and supports a normal fast-forward push. Record the source main commit in each export commit message; do not force-push or maintain a second independently edited copy.
+4. The owner evaluates the packages on the target Issabel/VOIZ systems. The current revision is untested; do not tag it as validated or claim supported versions without results.
+5. For upstream contributions, create a fork of the target project and copy the specific paths listed in [the proposals](proposals/00-INDEX.md). The standalone distribution branches share no upstream framework history and are not directly suitable as upstream PR heads.
+6. Open draft PRs with the actual integration diff, proposal, provenance and pending/completed owner results. Default-theme changes and existing-system migration require explicit maintainer decisions.
 
-## مرحله ۰ — وضعیت فعلی
+## Publishing the package branches
 
-- `main` (همین ریپو): سورس مشترک هر دو تم + پروپوزال‌ها + اسناد.
-- `fa-theme/` — تم فارسی `akzfa` (راست‌چین، وزیرمتن، بیلد Tailwind، نصب‌کننده استاندارد).
-- `en-theme/` — تم انگلیسی `akz` (همان معماری، LTR، فونت سیستم) — همان پکیجی که در فورک VOIZ هم هست.
-- `proposals/` — سه پروپوزال برای دو ریپازیتوری آپ‌استریم.
+The package trees can be exported without checking out or deleting source directories:
 
-## مرحله ۱ — پاک‌سازی و انتشار ریپو عمومی `akz_issable_theme`
-
-1. بررسی `LICENSE` ریشه (GPL-2.0-or-later) و ایندکس‌گذاری README (انجام شد).
-2. ساخت شاخه‌ها از همین سورس مشترک:
-
-```bash
-# شاخه فارسی: فقط fa-theme + README شاخه
-git switch -c fa
-git rm -r --cached en-theme proposals >/dev/null   # از ایندکس فقط؛ فایل‌ها در main می‌مانند
-git commit -m "fa: Persian AKZ theme (akzfa) for Issabel"
-git push -u origin fa
-
-# شاخه انگلیسی: فقط en-theme + README شاخه
-git switch -c en
-git rm -r --cached fa-theme proposals >/dev/null
-git commit -m "en: English AKZ theme (akz) for Issabel"
-git push -u origin en
-
-git switch main   # برگرد به main
+```sh
+git fetch origin
+source_commit=$(git rev-parse main)
+for edition in en fa; do
+  tree=$(git rev-parse "$source_commit:$edition-theme")
+  parent=$(git rev-parse "origin/$edition")
+  commit=$(printf 'Export %s package from main %s\n' "$edition" "$source_commit" | git commit-tree "$tree" -p "$parent")
+  git update-ref "refs/heads/$edition" "$commit"
+done
+git push --atomic origin main en fa
 ```
 
-3. در گیت‌هاب: Default branch = `main`، توضیحات ریپو، تاپیک‌ها (`issabel`, `asterisk`, `pbx`, `theme`, `persian`).
-4. Releases: تگ `fa-v1.0.0` و `en-v1.0.0` + پیوست zip هر تم در Release (کاربران بدون git هم بگیرند).
-
-## مرحله ۲ — اعتبارسنجی روی سرور آزمایشی (پیش‌نیاز هر PR)
-
-- طبق `fa-theme/COMPATIBILITY.md`: نصب تم روی ایزابل ۴ و ۵، چک‌لیست ۱۰ مرحله‌ای، تست `uninstall.sh`.
-- خروجی موردنیاز برای PR ها: اسکرین‌شات‌ها + نسخه‌های تست‌شده + نتیجه بازگردانی.
-
-## مرحله ۳ — پیشنهاد به voipiran/VOIZ
-
-1. **Issue اول، بعد PR:** در `voipiran/VOIZ` یک Issue باز کن و `proposals/02-voiz-upstream/PROPOSAL.md`
-   را (فارسی) بگذار؛ بپرس ترجیحشان جایگزینی `vitenant` است یا تم دوم.
-2. فورک رسمی `voipiran/VOIZ` → شاخه `feature/akz-ui-layer` از `main` → فقط فایل‌های لیست‌شده در
-   بخش ۳ پروپوزال → draft PR با لینک Issue.
-3. تا موافقت نگه‌دارنده، PR را **draft** نگه دار.
-
-## مرحله ۴ — پیشنهاد به IssabelFoundation
-
-1. طبق `en-theme/PUSH_GUIDE.md` و `proposals/01-issabel-framework/PROPOSAL.md`:
-   فورک `IssabelFoundation/framework` → شاخه از `master` → افزودن **فقط**
-   `framework/html/themes/akzfa/` (+ `contrib/` اگر گزینه ۲ را انتخاب کردند) → draft PR.
-2. همان کار برای نسخه انگلیسی (`akz`) به‌صورت PR جدا.
-3. اگر تم `farsi_rtl` را هدف گرفتند: `proposals/03-issabel-farsi-rtl/PROPOSAL.md` (گزینه B).
-
-## مرحله ۵ — نگهداری مستمر
-
-- هر تغییر UI: سورس در `contrib/*/ui/` ویرایش، `npm run build:css`، **سورس+خروجی با هم کامیت**.
-- هر نسخه: تگ `fa-vX.Y.Z` / `en-vX.Y.Z` + به‌روزرسانی `version=` در `akzfa.conf` و cache-busting (`?v=`).
-- همگام‌سازی دوره‌ای با آپ‌استریم‌ها (اگر `farsi_rtl` یا `tenant` یا VOIZ تغییر کرد، دیف بگیر و تطبیق بده).
-
-## قواعد لایسنس (خلاصه)
-
-- کد مشتق‌شده از فریم‌ورک ایزابل → GPL-2.0-or-later، سرصفحه‌ها حفظ.
-- فونت وزیرمتن → OFL-1.1، متن مجوز پیوست (فروش فونت به‌تنهایی ممنوع؛ استفاده در تم آزاد).
-- برندینگ «AKZ» فقط identification است، نه ادعای مالکیت ایزابل.
+Run this only with a clean, reviewed main commit and up-to-date remote refs. Push rejection means the remote advanced; fetch and reconcile instead of forcing the update. Release tags and archives should identify reviewed source commits.

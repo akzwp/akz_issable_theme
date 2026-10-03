@@ -1,85 +1,41 @@
-# Proposal: Add `akzfa` — an optional Persian (RTL) theme for the Issabel web framework
+# Proposal: adopt AKZ English and Persian themes in Issabel
 
-> **Prepared for:** IssabelFoundation — `framework` repository (theme layer)
-> **Prepared by:** AKZ (akzwp) — <https://akzwp.com>
-> **Status:** Draft for maintainer feedback. Not yet tested on a production server (see Validation).
-> **License of the contribution:** GPL-2.0-or-later (matching the framework). Bundled Vazirmatn font: SIL OFL 1.1.
+## Problem and proposed result
 
----
+AKZ provides a consistent interface for English/LTR and Persian/RTL users: responsive navigation, searchable modules, light/dark appearance, readable forms and tables, and improved calendar dialogs. The requested destination is to replace the default English and Persian presentation with AKZ, subject to maintainer review and the owner's server evaluation.
 
-## 1. Summary
+The implementation first introduces separate `akz` and `akzfa` directories so adoption and rollback remain explicit. Changing defaults for new installations and migrating existing installations should be separate, reviewable release decisions. No automatic fleet-wide migration is included in this contribution.
 
-This proposal adds an **optional, self-contained theme directory** named `akzfa` under
-`framework/html/themes/`, providing a professional **Persian / right-to-left** interface for Issabel:
+## Concrete code changes
 
-- Full RTL layout with the locally-bundled **Vazirmatn** font (8 weights, OFL-licensed, no CDN).
-- Dark/light appearance switch (CSS variables, no flash of wrong theme on load).
-- Responsive sidebar with live module search; mobile drawer.
-- Styled dialogs, tables, forms, notifications; Gregorian **and** Jalali calendar styling.
-- Zero changes to framework core, module backends, authentication, menu authorization, or PBX logic.
-
-A matching **English/LTR edition** (`akz`) is developed in the same codebase and can be submitted as a
-separate, parallel proposal.
-
-## 2. Why an optional theme (and not edits to `tenant` or `farsi_rtl`)
-
-| Approach | Risk | Upgrade path |
+| Source in AKZ main | Destination in framework | Effect |
 |---|---|---|
-| Edit `tenant` in place | Breaks existing installs; conflicts on every framework update | Painful |
-| Patch core CSS/JS | High regression risk across modules | Painful |
-| **Add a new theme directory (proposed)** | None for existing users — opt-in only | Trivial: replace one directory |
+| `en-theme/framework/html/themes/akz/` | `framework/html/themes/akz/` | English shell, templates, compiled CSS and interaction scripts |
+| `fa-theme/framework/html/themes/akzfa/` | `framework/html/themes/akzfa/` | Persian RTL shell and local Vazirmatn fonts |
+| Both `contrib/` directories | `contrib/akz-theme/`, `contrib/akzfa-theme/` | Editable styles, optional developer builds, installation/recovery tools and notices |
 
-This mirrors how the project already ships multiple themes (`tenant`, `farsi_rtl`) and how the
-community distributes extra themes (e.g. the `powerpbx/issabel-themes` collection).
+The theme hook `themesetup.php` keeps the existing Smarty assignments and menu/notification integration. Its package version is local; it no longer reads a distribution-specific /etc branding file. `_common/*.tpl` retain the framework content slots, login field names and module requests. Displayed login names are HTML-escaped. Base CSS loads before framework and module headers; the AKZ stylesheet loads after them.
 
-## 3. Technical design
+The CSS sources define colors, spacing, navigation, forms, switches, radios, table overflow and dialog layout. The current revision restores local calendar sizing/close-button fixes and named keyboard-operable color swatches, corrects English dialog centering and English color labels, and aligns selectors with each edition's namespace. Compiled CSS is committed. Tailwind is optional authoring tooling and never runs on a PBX.
 
-- **Selection mechanism:** unchanged — the `theme` key in `/var/www/db/settings.db` selects
-  `/var/www/html/themes/akzfa`; the standard `themesetup.php` hook performs Smarty assignments
-  (menu icons, breadcrumbs, notifications) exactly like the stock themes.
-- **Cascade strategy:** base CSS (Bootstrap, Neon) loads first, then `{$HEADER}`/`$HEADER_MODULES`
-  (module CSS), and the redesign layer `css/akzfa-tailwind.css` loads **last**, so it wins the
-  cascade without `!important` wars or touching module files.
-- **Tailwind is build-time only:** `corePlugins.preflight: false` to preserve legacy widgets;
-  generated utilities carry a `tw-` prefix to avoid collisions. Compiled CSS ships with the theme;
-  the server never needs Node.js.
-- **Design tokens:** CSS custom properties prefixed `--akzfa-*`, defined on `:root` and
-  `[data-theme="light"|"dark"]`.
-- **Embedded pages** (Asternic, FOP2, phone) are styled via an embedded layer while shown inside the
-  theme; their application files are not modified.
-- **No runtime dependencies** beyond what Issabel already ships.
+The UI scripts add client-side navigation and presentation behavior. Same-origin embedded PBX documents receive the theme layer while displayed in the shell; cross-origin pages are left to their application. This still requires module compatibility evaluation. The Persian package does not distribute the inherited cookie-based SIP-credential/webphone backend. Existing telephony applications stay separate.
 
-## 4. Provenance and licensing
+## Integration steps
 
-- Templates and `themesetup.php` derive from the Issabel framework (GPLv2+ file headers preserved).
-- The redesign layer originates from the author's UI work on the `voipiran/VOIZ` Persian
-  distribution (MIT for its added parts, GPL for framework-derived parts) and is contributed here
-  under **GPL-2.0-or-later** to match the framework.
-- The **Vazirmatn** font is bundled under the **SIL Open Font License 1.1** with its license text
-  included; font files are served locally (no external requests).
-- "AKZ" identifies the interface contribution; it is not a claim of ownership or endorsement.
+1. Create a contribution branch in a fork of [IssabelFoundation/framework](https://github.com/IssabelFoundation/framework), based on the target release. Inspection baseline: `8f0a6f3045cf1608d294036b77aa5e0f3c66cabc` (master). Copy the paths above; do not replace the repository with the standalone AKZ branch.
+2. Preserve upstream copyright headers and the attached license/notices. Reconcile the theme hook and template slots with that exact framework release. Keep authentication, ACL handling and module backends in the host framework.
+3. Update [issabel-framework.spec](https://github.com/IssabelFoundation/framework/blob/8f0a6f3045cf1608d294036b77aa5e0f3c66cabc/issabel-framework.spec): its main file list explicitly includes `/var/www/html/themes/tenant`, while themes-extra uses `themes/*` and excludes tenant. To ship AKZ in the main RPM, add both AKZ directories to the main file list and exclude both from themes-extra to avoid duplicate ownership. Verify the build's source-copy rules include both directories.
+4. After the owner's results are available, agree on new-install defaults for English and Persian in the release's provisioning/settings path. For existing systems, offer an explicit migration that changes only the theme/language selection and records the previous selection; retain the old themes for rollback. Do not overwrite settings.db or reuse a whole-PBX installer for this operation.
+5. Open a draft PR with the actual diff, source commit, tested environment information when available, and this proposal. The standalone theme repository is not a fork of framework, so its language branches cannot directly serve as upstream PR heads.
 
-## 5. Packaging
+## Security and data boundaries
 
-Two options — maintainers' preference requested:
+The standalone installer stages and backs up managed theme files, uses one lock for both editions, rejects unsafe paths, and updates only theme/language through a guarded SQLite transaction. Recovery preserves later administrative selections. Theme files and recovery records remain after deactivation so either edition can still be restored. Filesystem deployment and database changes are not a crash-atomic transaction. RPM integration should follow the framework's own ownership and packaging conventions.
 
-1. **Theme directory only** (`framework/html/themes/akzfa/`) merged like any other theme.
-2. **Theme + `contrib/` packaging** (as prepared in the referenced repository): editable CSS sources,
-   pinned Tailwind build, `install.sh`/`uninstall.sh` with atomic staging, `flock` locking,
-   settings backup/restore under `/var/lib/issabel/akzfa-theme`, and full license documents.
+There are no intended changes to dialplans, accounts, call records, SIP credentials, recordings, services, firewalls or database schemas. A UI contribution is not evidence of complete application security or standards compliance.
 
-## 6. Validation status (honest disclosure)
+## Evidence and readiness
 
-- Compiled CSS passes automated build/contrast/DOM checks (jsdom-based) in the source repository.
-- **No browser, installation, application, automated, or compatibility tests have been run against a
-  real Issabel server yet.** Before marking this PR ready for review, the author will provide:
-  - Issabel 4 (Asterisk 16) and Issabel 5 (Asterisk 18) installation results,
-  - before/after screenshots (login, dashboard, CDR, reports, PBX config, calendar),
-  - rollback verification (`uninstall.sh` restores prior `theme`/`language`).
+Source comparison and CSS generation were performed. **No tests were run for this revision**, as requested by the owner; no passing tests, measured accessibility scores or supported Issabel-version matrix are claimed. Before default adoption, the owner/maintainers need to supply results for login/logout and permissions, representative module forms and tables, calendar behavior, RTL/LTR layouts, keyboard operation, and installation/upgrade/recovery on their target release. These are pending acceptance criteria, not completed validation.
 
-## 7. Maintainer decisions requested
-
-- Preferred theme name (`akzfa` or otherwise) and whether the English sibling (`akz`) should follow.
-- Theme-directory-only vs. `contrib/` packaging scope (Section 5).
-- Whether the Jalali calendar assets should remain inside the theme or move to a language pack.
-- RPM/release packaging implications for shipping an additional theme.
+Please review the directory names, release packaging, default-selection policy and migration timing.

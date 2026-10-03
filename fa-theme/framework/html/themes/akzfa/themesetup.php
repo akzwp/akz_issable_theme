@@ -67,15 +67,8 @@ function themeSetup(&$smarty, $selectedMenu, $pdbACL, $pACL, $idUser)
 
     }
 
-/*voipiran*/
-// AKZ theme: read branding config with a safe fallback when the file is absent.
-$version = '1.0.0';
-if (file_exists('/etc/akzfa.conf')) {
-    $config = parse_ini_file('/etc/akzfa.conf', true);
-    if (is_array($config) && isset($config['version'])) {
-        $version = $config['version'];
-    }
-}
+// No distribution-specific configuration is required by this theme.
+$version = '2.0.0';
 
     $smarty->assign('arrMainMenu', $arrMainMenu);
     $smarty->assign("LANG", $lang);

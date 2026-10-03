@@ -1,5 +1,5 @@
 <html>
-  <title>{$titulo}</title>
+  <title>Issabel · AKZ</title>
   <head>
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/help.css" />
   </head>

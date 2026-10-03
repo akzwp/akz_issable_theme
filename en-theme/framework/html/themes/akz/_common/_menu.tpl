@@ -233,7 +233,7 @@
         <div class="akz-topbar-user">
             <a href="#" class="akz-user-link dropdown-toggle" data-toggle="dropdown">
                 <img style="border:0px" src="/themes/{$THEMENAME}/images/Icon-user.png" alt="" />
-                <span class="akz-user-name">{$USER_LOGIN}</span>
+                <span class="akz-user-name">{$USER_LOGIN|escape:html}</span>
                 <i class="fa fa-angle-down akz-user-caret"></i>
             </a>
             <ul class="dropdown-menu">

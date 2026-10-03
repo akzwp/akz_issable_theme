@@ -29,8 +29,7 @@ Reference: <https://github.com/IssabelFoundation/framework> and <https://github.
 ## Rename map (from the upstream VOIZ presentation layer)
 
 `vitenant→akzfa`, `voiz-*→akzfa-*`, `voiz-theme→akzfa-theme`, `--voiz-*→--akzfa-*`.
-Branding strings were replaced with AKZ-only values; the `/etc/akzfa.conf` dependency is guarded
-and optional.
+Distribution-specific branding configuration is not required. Original file notices and source attribution are retained.
 
 ## Export provenance
 
