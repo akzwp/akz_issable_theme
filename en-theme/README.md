@@ -1,29 +1,60 @@
-# AKZ — English / LTR
+# AKZ — English theme for Issabel
 
-A presentation theme for an existing Issabel PBX, distributed as `akz`. It provides light/dark appearance, responsive navigation and module search, consistent forms and tables, and calendar dialog controls. Existing framework authentication and module processing remain in control.
+AKZ is an English, left-to-right interface for an existing Issabel server. Its installed name is `akz`. It includes light/dark appearance, responsive navigation, module search, and coordinated forms, tables and calendar controls.
 
-## Install
+**New to server installation? Start with [INSTALL.md](INSTALL.md).** It explains every command, where to run it, and what a successful result looks like. No Node.js, npm or CSS compilation is required on the server.
 
-Download and extract the [en branch](https://github.com/akzwp/akz_issable_theme/tree/en) on the server, then run from the extracted directory:
+## 1. Choose your task
 
-```sh
-sudo bash install.sh
-```
+| Your situation | Follow this guide |
+|---|---|
+| You have not installed this edition yet | [First installation](INSTALL.md) |
+| AKZ is installed and you want the latest files | [Update an existing installation](UPDATE.md) |
+| You want the previously selected theme back | [Uninstall / restore the previous selection](UNINSTALL.md) |
+| Installation reports an error or the old appearance remains | [Installation troubleshooting](INSTALL.md#troubleshooting) · [Update troubleshooting](UPDATE.md#troubleshooting) |
 
-Installation and language selection are unattended. No Node.js, npm, dependency download or CSS build is needed on the server. Sign out and sign in again.
+## 2. Know where commands run
 
-[Requirements, installation scope and recovery](INSTALL.md) · [Upstream proposal](PULL_REQUEST.md)
+1. Use your computer only to open an SSH connection or download a package for transfer.
+2. Run the Linux installation commands **on the Issabel server**, after connecting to it.
+3. Obtain the **complete** English package. Do not copy just `install.sh`, a CSS file or the theme directory.
+4. Enter the package directory containing `README.md`, `VERSION`, `install.sh`, `uninstall.sh`, `framework` and `contrib`.
+5. Follow the guide for your operation.
 
-`sudo bash install.sh --no-activate` installs files without selecting the theme. `sudo bash uninstall.sh` restores the prior selection if this theme is active and retains files for recovery.
+The `en` branch extracts as `akz_issable_theme-en`. If you downloaded `main`, enter its `en-theme` folder instead. There is no additional `en-theme` folder inside the English branch package.
 
-## Source and maintenance
+## 3. First installation, in order
 
-The authoring source is [main/en-theme](https://github.com/akzwp/akz_issable_theme/tree/main/en-theme). This branch is its complete installable package. Edit on main, commit source and generated CSS together, then export this directory to the corresponding language branch. Optional development tooling in `contrib/akz-theme` is never executed by the installer.
+1. Follow the SSH/root and prerequisite instructions in [steps 1–2 of INSTALL.md](INSTALL.md).
+2. Follow the package-download steps in that guide.
+3. Read `VERSION`, save the package path and run `bash install.sh` in the root shell.
+4. Expect a line beginning `Installed akz, version` and a recovery-directory path.
+5. Sign out of Issabel and sign back in, then follow the guide's selection check.
 
-The source reference is the local english_issable_akz snapshot. Calendar controls, radio buttons and switches are aligned with the newer local work; namespacing and direction-specific behavior are retained. Theme-owned labels use English and the sidebar uses LTR layout.
+The installer selects AKZ and English automatically. To place the files without selecting the theme, use the separately explained `--no-activate` option.
 
-## Status and licensing
+## 4. Updating, in order
 
-This revision has not been tested. Browser and server evaluation will be performed by the owner before proposing a default-theme migration. No accessibility, performance or security certification is claimed.
+1. Obtain a new package, or update a clean Git checkout as described in [UPDATE.md](UPDATE.md).
+2. Run the installer **from that updated package**.
+3. Save the displayed version and recovery path.
+4. Sign out and back in.
 
-Retain [LICENSE](LICENSE), file headers and [third-party notices](contrib/akz-theme/THIRD_PARTY_NOTICES.md). AKZ identifies the interface contribution, not authorship of the whole framework or upstream endorsement.
+Uninstalling first is unnecessary. Reinstalling from an old download does not fetch GitHub changes. `cat VERSION` describes the downloaded package, not proof of what is currently installed.
+
+## 5. Uninstalling, in order
+
+1. Open [UNINSTALL.md](UNINSTALL.md) and read the saved previous-theme selection.
+2. Enter a complete English package directory on the server.
+3. Run `bash uninstall.sh` in the root shell.
+4. Sign out and back in.
+
+This restores the saved selection only when `akz` is still active. Files and recovery records remain on the server. It does not remove Issabel, delete call data, or replace the current AKZ files with an older version.
+
+## Source, proposals and status
+
+The editable source is [main/en-theme](https://github.com/akzwp/akz_issable_theme/tree/main/en-theme); the `en` branch is the installable export. [Developer instructions](contrib/akz-theme/README.md), [upstream proposal](PULL_REQUEST.md), and [submission notes](PUSH_GUIDE.md) are optional reading for contributors.
+
+No browser, installation or automated tests have been run for these revisions. Runtime compatibility remains for the owner to evaluate.
+
+Retain [LICENSE](LICENSE), original file headers and [third-party notices](contrib/akz-theme/THIRD_PARTY_NOTICES.md). AKZ does not imply endorsement by Issabel or VOIZ.
