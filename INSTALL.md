@@ -6,7 +6,7 @@ The package is a theme for an **existing** Issabel server. It does not install o
 sudo bash install.sh
 ```
 
-This installs and activates that edition and selects its language without prompts, downloads, Node.js, npm, or a build step. Sign out and sign in again to refresh the existing session. A browser may also need a reload for the new assets.
+This installs and activates that edition and selects its language without prompts, downloads, Node.js, npm, or a build step. Sign out and sign in again to refresh the existing session. A browser may also need a reload for the new assets. The installer prints the package version and refreshes this theme’s file timestamps during deployment; it does not remove shared caches. Reinstalling an old checkout/archive does not download an update: first fetch the current branch or extract a new archive.
 
 ```sh
 sudo bash install.sh --no-activate  # install files while preserving the selection
