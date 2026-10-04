@@ -1,14 +1,22 @@
-# AKZ Persian architecture
+# معماری پوستهٔ فارسی AKZ
 
-The package installs `framework/html/themes/akzfa` as `/var/www/html/themes/akzfa`. Framework selection, authentication, menu authorization and module processing remain in the host application. `themesetup.php` supplies the inherited Smarty menu/notification assignments and a local package version. No external branding configuration is required.
+چارچوب ایزابل پوشهٔ `akzfa` را از طریق تنظیم استاندارد theme انتخاب می‌کند. احراز هویت، مجوز منوها و پردازش ماژول‌ها در اختیار چارچوب باقی می‌ماند. `themesetup.php` متغیرهای Smarty مربوط به منو، اعلان‌ها و نسخهٔ پوسته را فراهم می‌کند و به فایل تنظیمات برند در /etc وابسته نیست.
 
-- `_common/*.tpl`: Persian RTL shell, navigation, login and popup markup.
-- `contrib/akzfa-theme/ui/*.css`: editable colors, layout, forms, tables, calendar and embedded-module styles.
-- `css/akzfa-tailwind.css`: compiled distribution stylesheet, loaded after framework/module headers. The legacy cascade uses targeted specificity and !important rules; it is not isolation from every module stylesheet.
-- `js/akzfa-ui.js`: theme switching, navigation/search, controls and same-origin iframe styling.
-- `js/akzfa-embedded.js`: embedded PBX presentation behavior. Cross-origin documents are not modified.
-- `fonts/vazirmatn`: local fonts with the included license.
+| مسیر | مسئولیت |
+|---|---|
+| `framework/html/themes/akzfa/_common/*.tpl` | پوستهٔ صفحات، ورود، منو، راهنما و پنجره‌ها |
+| `contrib/akzfa-theme/ui/*.css` | سورس رنگ‌ها، چیدمان، کنترل‌ها و ظاهر ماژول‌ها |
+| `ui/icons.css` | تعریف آیکون‌ها با فونت‌های محلی داخل بسته |
+| `ui/runtime-fixes.css` | اصلاحات بازیابی‌شده از CSS نهاییِ نسخهٔ محلی |
+| `css/akzfa-tailwind.css` | خروجی آمادهٔ نصب، بارگذاری‌شده پس از استایل ماژول‌ها |
+| `js/akzfa-ui.js` | ظاهر روشن/تیره، منو، جست‌وجو، کنترل‌های رابط و قاب‌های هم‌مبدأ |
+| `js/akzfa-embedded.js` | رفتار نمایشی تنظیمات PBX در قاب |
+| `fonts/` | فونت‌های بسته، از جمله وزیرمتن و آیکون‌ها |
 
-The export maps the local VOIZ UI namespace to akzfa, including calendar swatch selectors. The English edition has separate LTR styles and English labels. Both share the installer implementation. Compiled CSS is distributed; the developer-only Tailwind toolchain has preflight disabled and a tw- utility prefix.
+برخی ماژول‌های VOIZ کلاس‌هایی مانند `voiz-contact-form` و `voiz-pbx-layout` دارند. CSS این نسخه هر دو نام قدیمی و جدید را می‌پذیرد؛ اسکریپت نیز کلاس متناظر را کنار کلاس اصلی اضافه می‌کند. نام اصلی، فرم، شناسه و رویدادهای ماژول حذف یا جایگزین نمی‌شوند. این سازگاری به معنی نصب قالب‌ها یا بک‌اند ماژول‌های VOIZ روی ایزابل خام نیست.
 
-The package does not include the inherited theme-local phone backend, a replacement database, language packs or a Jalali calendar engine. It may link to already installed host applications. See [installation and recovery](INSTALL.md), [compatibility status](COMPATIBILITY.md), and [the proposal](PULL_REQUEST.md).
+تغییر نام پوسته به akzfa، ترجمهٔ برچسب‌ها و جداسازی مسیرهای نصب حفظ شده‌اند. CSS از ویژگی‌های جدید مرورگر و در موارد لازم از !important استفاده می‌کند؛ سازگاری با همهٔ استایل‌های افزونه‌ها تضمین‌شده نیست. قاب‌های هم‌مبدأ هنگام نمایش در پوسته استایل می‌گیرند؛ صفحات بین‌مبدأ یا صفحات مستقلِ برنامه‌های دیگر خارج از این کنترل هستند.
+
+نصب‌کنندهٔ هر دو زبان منطق مشترک دارد. شمارهٔ بسته از فایل VERSION خوانده می‌شود و شمارهٔ دارایی‌ها در قالب‌ها ثبت شده است. هنگام تغییر CSS/JS باید نسخهٔ دارایی‌ها نیز تغییر کند. با تغییر CSS، سورس و خروجی باید در یک تغییر ثبت شوند. ابزار Tailwind فقط برای توسعه است؛ preflight خاموش است و کلاس‌های تولیدی پیشوند tw- دارند.
+
+[نصب و بازگردانی](INSTALL.md) و [وضعیت سازگاری](COMPATIBILITY.md) جزئیات عملی را توضیح می‌دهند.

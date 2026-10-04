@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html dir="rtl" lang="fa">  <!--  AKZ -->
+<html dir="rtl" lang="fa" data-akzfa-version="2.0.1">  <!--  AKZ -->
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="AKZ Persian interface for Issabel">
-        <title>Issabel · AKZ</title>
+        <meta name="description" content="پوستهٔ فارسی AKZ برای مدیریت ارتباطات ایزابل">
+        <title>ایزابل · پوستهٔ AKZ</title>
     <!-- AKZ: pre-paint theme init (avoids flash of wrong theme) -->
     <script type='text/javascript'>
         (function () {
@@ -51,7 +51,7 @@
         {$HEADER}
     {$HEADER_MODULES}
     <!-- Final theme contract: loaded after module-provided styles. -->
-    <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.0">
+    <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.1">
     <!-- AKZ: Force Farsi calendar language if Calendar object exists -->
     <script type="text/javascript">
     (function () {
@@ -198,7 +198,7 @@ $(document).ready(function(e) {
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-api.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/jquery.validate.min.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-custom.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=2.0.0"></script>
+        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=2.0.1"></script>
     </div>
 </body>
 </html>

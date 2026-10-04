@@ -25,7 +25,7 @@
   +----------------------------------------------------------------------+
   $Id: popup.tpl,v 1.1.1.1 2007/07/06 21:31:56 gcarrillo Exp $
 *}
-<html dir="rtl" lang="fa">
+<html dir="rtl" lang="fa" data-akzfa-version="2.0.1">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,7 +41,7 @@
   <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/styles.css">
   <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/help.css">
   <!-- AKZ: internal utility engine + redesign layer (always last) -->
-  <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.0">
+  <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.1">
   <script src="{$WEBCOMMON}js/base.js"></script>
   <script src="{$WEBCOMMON}js/iframe.js"></script>
 </head>

@@ -205,9 +205,9 @@ html body :is(.panel-heading, .panel-footer) { padding: 12px 16px; }
 html body .panel-body { padding: 16px; }
 html body fieldset { border-color: var(--akzfa-border); }
 html body legend { color: var(--akzfa-heading); border-color: var(--akzfa-border); font-size: 15px; font-weight: 600; padding: 6px 10px; width: auto; }
-html body :is(table.tabForm, table.akzfa-form-table) { width: 100% !important; max-width: 100%; table-layout: auto; border-collapse: separate; border-spacing: 0 10px; }
-html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr > td { padding: 6px 10px; font-size: 14px; vertical-align: middle; color: var(--akzfa-text); white-space: normal; }
-html body :is(table.tabForm, table.akzfa-form-table) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea) { width: 100%; }
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) { width: 100% !important; max-width: 100%; table-layout: auto; border-collapse: separate; border-spacing: 0 10px; }
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr > td { padding: 6px 10px; font-size: 14px; vertical-align: middle; color: var(--akzfa-text); white-space: normal; }
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea) { width: 100%; }
 html body :is(.fila_botonera, .button-bar, .form-actions, .akzfa-actions) { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 html body :is(.nav-tabs, .nav-pills) { display: flex; flex-wrap: wrap; gap: 4px; border-color: var(--akzfa-border); padding: 0; }
 html body :is(.nav-tabs, .nav-pills) > li { float: none; }
@@ -267,7 +267,7 @@ html body .neo-modal-issabel-popup-title { padding-inline-end: 56px !important; 
    roomy: labels above full-width fields, comfortable spacing. */
 html body .neo-modal-issabel-popup-content :is(label, .letra12 b, b) { display: block; margin: 14px 0 6px; color: var(--akzfa-text-soft) !important; font-size: 13px; }
 html body .neo-modal-issabel-popup-content :is(input:not([type]), input[type="text"], input[type="password"]) { display: block; width: 100% !important; max-width: 100%; min-height: 44px; }
-html body .neo-modal-issabel-popup-content :is(table.tabForm, .akzfa-form-table) { width: 100%; }
+html body .neo-modal-issabel-popup-content :is(table.tabForm, :is(.akzfa-form-table, .voiz-form-table)) { width: 100%; }
 html body .neo-modal-issabel-popup-content td { padding: 6px 8px; }
 html body .neo-modal-issabel-popup-content :is(.button, .btn, input[type="button"], input[type="submit"]) { min-width: 110px; margin-top: 14px; }
 /* Keep the original password inputs and submission handlers in a single column. */
@@ -363,13 +363,13 @@ html body.login-page .fotter { border-top: 1px solid var(--akzfa-border); margin
 html body.login-page .copyr p { color: var(--akzfa-muted); font-size: 12px; line-height: 2; margin: 4px 0; }
 .akzfa-login-brands { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 767px) {
-  html body :is(table.tabForm, table.akzfa-form-table),
-  html body :is(table.tabForm, table.akzfa-form-table) > tbody,
-  html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr,
-  html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr > td { display: block; width: 100% !important; }
-  html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr > td { padding: 5px 0; }
-  html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr { margin-bottom: 12px; }
-  html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr > td:empty { display: none; }
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)),
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody,
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr,
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr > td { display: block; width: 100% !important; }
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr > td { padding: 5px 0; }
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr { margin-bottom: 12px; }
+  html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr > td:empty { display: none; }
   html body :is(.dataTables_filter, .dataTables_length, .dataTables_info, .dataTables_paginate) { float: none !important; text-align: start !important; }
   html body .akzfa-topbar .dropdown-menu { position: fixed; top: 70px; right: 12px; left: 12px; width: auto; }
   html body :is(.modal-body, .ui-dialog-content, .neo-modal-issabel-popup-content) { padding: 14px; }

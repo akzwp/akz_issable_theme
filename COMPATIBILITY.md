@@ -1,7 +1,9 @@
-# Compatibility status
+# وضعیت سازگاری و ارزیابی
 
-No browser, installation, automated or compatibility tests were run for this revision. No tested Issabel-version or browser matrix is claimed. CSS generation is a packaging step, not a runtime test.
+در این نوبت هیچ آزمون مرورگر، نصب، خودکار یا سازگاری اجرا نشده است. خواندن و مقایسهٔ سورس، بازیابی اصلاحات محلی و تولید CSS انجام شده‌اند؛ هیچ نسخهٔ مشخص ایزابل یا مرورگر به‌عنوان آزموده‌شده معرفی نمی‌شود.
 
-The installer targets the standard Issabel paths and system commands in [INSTALL.md](INSTALL.md). Persian activation requires lang/fa.lang. The interface uses modern CSS, including custom properties, logical properties, :has(), :is() and dynamic viewport units. Compatibility with legacy browsers is not established.
+نصب‌کننده مسیرها و ابزارهای استاندارد [راهنمای نصب](INSTALL.md) را انتظار دارد. فعال‌سازی فارسی به lang/fa.lang نیاز دارد. پوسته از CSS جدید مانند custom properties، :has()، :is()، ویژگی‌های منطقی و واحدهای اندازهٔ پویا استفاده می‌کند؛ پشتیبانی از مرورگرهای قدیمی تأیید نشده است.
 
-The owner will evaluate login/session behavior, authorization-visible navigation, representative forms/tables, calendars, embedded PBX modules, both appearance modes and install/upgrade/recovery on the intended release. Third-party module layouts and custom deployments may require additional adaptation.
+نمایش محلی از داده‌های نمونه و برخی قالب‌های VOIZ استفاده می‌کند. روی ایزابل خام، محتوا، مجوزها، منوها و قالب ماژول‌های واقعی ممکن است متفاوت باشند. این بسته برای تغییر ظاهر، فایل‌های بک‌اند یا قالب‌های همهٔ ماژول‌ها را بازنویسی نمی‌کند. نسخهٔ ۲.۰.۱ اختلاف‌های مشخص در آیکون‌ها، کنترل‌های تقویم، کلید شبکه و نام کلاس‌های ماژول‌های VOIZ را در سورس برطرف می‌کند؛ تطابق تصویری کامل هنوز به ارزیابی مالک روی سرور نیاز دارد.
+
+ورود و نشست، منوهای مجاز، فرم‌ها و جدول‌های اصلی، تقویم، قاب PBX، حالت روشن/تیره و نصب/ارتقا/بازگردانی باید روی انتشار مقصد توسط مالک بررسی شوند. هیچ ادعای تأییدیهٔ امنیت، دسترس‌پذیری یا کارایی مطرح نشده است.

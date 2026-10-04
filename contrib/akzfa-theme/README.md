@@ -1,10 +1,10 @@
-# AKZ development sources
+# سورس و ابزار نگهداری پوستهٔ فارسی
 
-Server installation: run `sudo bash install.sh` from the package root. Read [INSTALL.md](../../INSTALL.md) for prerequisites, supported paths and rollback behavior.
+برای نصب روی سرور از ریشهٔ بسته `sudo bash install.sh` را اجرا کنید. [راهنمای نصب](../../INSTALL.md) پیش‌نیازها و رفتار بازگردانی را توضیح می‌دهد.
 
-## Optional CSS editing
+## ویرایش اختیاری CSS
 
-The server consumes `framework/html/themes/akzfa/css/akzfa-tailwind.css` directly. JavaScript is readable source. Only developers changing CSS need the pinned build tooling:
+سرور مستقیماً فایل آمادهٔ `framework/html/themes/akzfa/css/akzfa-tailwind.css` را مصرف می‌کند و به Node.js یا npm نیاز ندارد. فقط توسعه‌دهنده‌ای که CSS را تغییر می‌دهد از ابزار ساخت استفاده می‌کند:
 
 ```sh
 cd contrib/akzfa-theme
@@ -12,6 +12,8 @@ npm ci --ignore-scripts
 npm run build:css
 ```
 
-Commit the generated CSS with changes to `ui/*.css`; do not deploy raw Tailwind directives. Preflight is disabled and generated utility classes use the `tw-` prefix. Theme CSS loads after framework/module headers.
+فایل ورودی `ui/akzfa-theme.css` بخش‌های قابل ویرایش را وارد می‌کند. تعریف آیکون‌های محلی در `ui/icons.css` و اصلاحات بازیابی‌شده از خروجی محلی در `ui/runtime-fixes.css` قرار دارند. تغییر را فقط در خروجی نهایی اعمال نکنید؛ در غیر این صورت ساخت بعدی آن را از بین می‌برد. سورس و خروجی جدید را با هم ثبت و شمارهٔ دارایی‌های قالب‌ها را به‌روز کنید.
 
-`manage.sh` is shared verbatim between the two editions; the wrappers select a fixed theme and operation. Keep both copies synchronized on main. Runtime files are independent of this development toolchain.
+CSS پوسته پس از استایل‌های چارچوب و ماژول‌ها بارگذاری می‌شود. preflight غیرفعال است و کلاس‌های تولیدی tw- دارند. کلاس‌های متعلق به ماژول‌های VOIZ حفظ می‌شوند.
+
+فایل `manage.sh` در دو نسخهٔ فارسی و انگلیسی مشترک است؛ تغییرات نصب‌کننده در main باید در هر دو کپی اعمال شوند. ابزارهای توسعه هنگام نصب سرور اجرا نمی‌شوند. متن اصلی مجوزها و سرصفحه‌های حقوق مؤلف را نگه دارید.

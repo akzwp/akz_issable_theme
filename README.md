@@ -1,31 +1,46 @@
-# AKZ — Persian / RTL
+# پوستهٔ فارسی AKZ برای ایزابل و VOIZ
 
-A presentation theme for an existing Issabel PBX, distributed as `akzfa`. It provides light/dark appearance, responsive navigation and module search, consistent forms and tables, and calendar dialog controls. Existing framework authentication and module processing remain in control.
+رابط فارسی و راست‌چین **AKZ** با نام فنی `akzfa` برای یک سرور ایزابلِ از قبل نصب‌شده است. این پوسته شامل حالت روشن و تیره، منوی واکنش‌گرا، جست‌وجوی بخش‌ها، فرم‌ها و جدول‌های هماهنگ و ظاهر اصلاح‌شدهٔ تقویم است. نسخهٔ فعلی: **۲.۰.۱**.
 
-## نصب / Install
+## نصب
 
-برای نصب، شاخهٔ fa را روی سرور دریافت و استخراج کنید و دستور زیر را در پوشهٔ آن اجرا کنید. نیازی به Node.js یا npm نیست. پس از نصب یک بار خارج و دوباره وارد شوید.
-
-Download and extract the [fa branch](https://github.com/akzwp/akz_issable_theme/tree/fa) on the server, then run from the extracted directory:
+[آخرین بستهٔ شاخهٔ فارسی](https://github.com/akzwp/akz_issable_theme/archive/refs/heads/fa.zip) را دریافت و روی سرور استخراج کنید. در پوشهٔ استخراج‌شده اجرا کنید:
 
 ```sh
 sudo bash install.sh
 ```
 
-Installation and language selection are unattended. No Node.js, npm, dependency download or CSS build is needed on the server. Sign out and sign in again.
+نصب و انتخاب پوسته و زبان فارسی بدون پرسش تعاملی انجام می‌شود. سرور به Node.js، npm یا ساخت CSS نیاز ندارد. پس از نصب یک بار خارج و دوباره وارد شوید. [پیش‌نیازها و جزئیات بازگردانی](INSTALL.md) را بخوانید.
 
-[Requirements, installation scope and recovery](INSTALL.md) · [Upstream proposal](PULL_REQUEST.md)
+## به‌روزرسانی نسخهٔ قبلی
 
-`sudo bash install.sh --no-activate` installs files without selecting the theme. `sudo bash uninstall.sh` restores the prior selection if this theme is active and retains files for recovery.
+**حذف و نصب از همان پوشهٔ قدیمی، نسخهٔ جدید GitHub را دریافت نمی‌کند.** ابتدا بستهٔ تازه را دریافت کنید. اگر مخزن را با Git و روی شاخهٔ `fa` دریافت کرده‌اید:
 
-## Source and maintenance
+```sh
+git pull --ff-only
+sudo bash install.sh
+```
 
-The authoring source is [main/fa-theme](https://github.com/akzwp/akz_issable_theme/tree/main/fa-theme). This branch is its complete installable package. Edit on main, commit source and generated CSS together, then export this directory to the corresponding language branch. Optional development tooling in `contrib/akzfa-theme` is never executed by the installer.
+اگر فایل ZIP دارید، بستهٔ جدید را در پوشه‌ای جدا استخراج و نصب‌کنندهٔ همان پوشه را اجرا کنید؛ نیازی به حذف پوستهٔ قبلی نیست. نصب‌کننده در پایان نام پوسته، شمارهٔ نسخه و مسیر پشتیبان را چاپ می‌کند. برای این نسخه باید `akzfa, version 2.0.1` دیده شود. به‌روزرسانی تاریخ فایل‌های پوسته و نشانی نسخه‌دار CSS/JS به تازه‌شدن قالب و دارایی‌های مرورگر کمک می‌کند؛ کش مشترک و نشست‌های کاربران حذف نمی‌شوند.
 
-The source reference is the local VOIZ theme/vitenant and ui snapshot. Calendar controls, radio buttons and switches are aligned with the newer local work; namespacing and direction-specific behavior are retained. Vazirmatn fonts are served locally. Existing Persian translations and calendar support are prerequisites; this is not a language pack.
+## اصلاحات این نسخه
 
-## Status and licensing
+- بازیابی تغییراتی که فقط داخل CSS نهایی رایانهٔ محلی بودند و در ساخت قبلی از دست رفته بودند: فاصله و ظاهر رویدادهای تقویم، شمارهٔ روزها، پنجرهٔ رویداد و انتخاب رنگ.
+- افزودن تعریف آیکون‌ها با استفاده از فونت‌های موجود داخل بسته.
+- ظاهر هماهنگ کلید روشن/خاموش Issabel Network، بدون جابه‌جایی ثابت وابسته به اندازهٔ صفحه.
+- سازگاری با کلاس‌های موجود در قالب ماژول‌های VOIZ برای دفترچه تلفن، تنظیمات PBX، سخت‌افزار، گزارش تماس و ابزارک‌های داشبورد؛ فایل‌های ماژول‌ها بازنویسی نمی‌شوند.
+- نگهداری اصلاحات در سورس قابل ویرایش تا ساخت بعدی دوباره آن‌ها را حذف نکند.
 
-This revision has not been tested. Browser and server evaluation will be performed by the owner before proposing a default-theme migration. No accessibility, performance or security certification is claimed.
+## بازگردانی
 
-Retain [LICENSE](LICENSE), file headers and [third-party notices](contrib/akzfa-theme/THIRD_PARTY_NOTICES.md). AKZ identifies the interface contribution, not authorship of the whole framework or upstream endorsement.
+`sudo bash install.sh --no-activate` فقط فایل‌ها را نصب می‌کند.
+
+`sudo bash uninstall.sh` اگر این پوسته فعال باشد، انتخاب قبلی را بازمی‌گرداند. فایل‌ها و اطلاعات بازیابی برای بازگشت نسخهٔ دیگر نگه داشته می‌شوند؛ این دستور پاک‌سازی کامل نیست.
+
+## نگهداری و مشارکت
+
+منبع اصلی این شاخه [main/fa-theme](https://github.com/akzwp/akz_issable_theme/tree/main/fa-theme) است. [معماری](ARCHITECTURE.md)، [وضعیت سازگاری](COMPATIBILITY.md) و [متن پیشنهادی برای مشارکت بالادستی](PULL_REQUEST.md) در همین بسته قرار دارند. ابزار ساختِ اختیاری توسعه‌دهندگان در `contrib/akzfa-theme` است و در نصب سرور اجرا نمی‌شود.
+
+این تغییرات با خواندن و مقایسهٔ فایل‌ها تهیه شده‌اند. بنا به درخواست مالک، هیچ آزمون مرورگر، نصب یا آزمون خودکار اجرا نشده و تطابق کامل ظاهری روی سرور هنوز تأیید نشده است. نمایش محلی با داده‌های نمونه، معادل رفتار ماژول‌های واقعی روی سرور نیست.
+
+[مجوز اصلی](LICENSE)، سرصفحه‌های حقوق مؤلف و [اطلاعیهٔ اجزای ثالث](contrib/akzfa-theme/THIRD_PARTY_NOTICES.md) باید حفظ شوند. نام AKZ بیانگر مشارکت در رابط است و تأیید رسمی Issabel یا VOIZ را القا نمی‌کند.

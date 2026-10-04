@@ -26,11 +26,11 @@ html body #applet_grid .appletwindow_fullcontent { max-height: none; min-width: 
 html body #applet_grid .appletwindow_wait { padding: 30px 10px; text-align: center; color: var(--akzfa-muted); }
 html body #applet_grid .ui-sortable-placeholder { visibility: visible !important; min-height: 180px; border: 2px dashed var(--akzfa-border-strong); border-radius: 12px; background: var(--akzfa-surface-2); }
 html body #applet_grid :is(.gadget, .tabFormTable) { width: 100%; color: var(--akzfa-text); background: transparent !important; }
-html body #applet_grid .akzfa-gauges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: 6px; min-width: 0; height: auto !important; min-height: 140px; direction: ltr; }
+html body #applet_grid :is(.akzfa-gauges, .voiz-gauges) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: 6px; min-width: 0; height: auto !important; min-height: 140px; direction: ltr; }
 html body #applet_grid :is(#cpugauge, #memgauge, #swapgauge) { float: none !important; width: 100% !important; min-width: 0; }
 html body #applet_grid [id^="dashboard-applet-"] svg text { fill: var(--akzfa-text) !important; font-family: Vazirmatn, sans-serif !important; }
 html body #applet_grid :is(#dashboard-applet-cpugauge, #dashboard-applet-memgauge, #dashboard-applet-swapgauge) { width: 140px !important; max-width: 100%; height: 140px !important; margin: auto; }
-html body #applet_grid .akzfa-gauges svg { display: block; width: 100%; height: 140px; overflow: visible; }
+html body #applet_grid :is(.akzfa-gauges, .voiz-gauges) svg { display: block; width: 100%; height: 140px; overflow: visible; }
 html body #applet_grid :is(.neo-applet-tline, .neo-applet-hd-report-row) { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; height: auto; width: 100%; padding: 7px 0; overflow: visible; border-bottom: 1px solid var(--akzfa-border); }
 html body #applet_grid :is(.neo-applet-titem, .neo-applet-tdesc, .neo-applet-hd-report-row-left, .neo-applet-hd-report-row-right) { position: static; float: none; width: auto; max-width: 100%; height: auto; padding: 0; margin: 0; white-space: normal; overflow-wrap: anywhere; color: var(--akzfa-text-soft); }
 .akzfa-drive { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
@@ -89,8 +89,8 @@ html body #dashboard-applet-performancegraph { width: 100% !important; min-width
 html body #loader { border-color: var(--akzfa-surface-3); border-top-color: var(--akzfa-primary); }
 html body mark { background: var(--akzfa-primary-soft); color: var(--akzfa-primary-text); }
 html body #msgFilter { display: block; color: var(--akzfa-text-soft); font-size: 13px; line-height: 2; margin: 12px 0; overflow-wrap: anywhere; }
-html body.akzfa-cdr-page { padding: 20px; }
-html body.akzfa-cdr-page .neo-table-header-row { display: none; }
+html body:is(.akzfa-cdr-page, .voiz-cdr-page) { padding: 20px; }
+html body:is(.akzfa-cdr-page, .voiz-cdr-page) .neo-table-header-row { display: none; }
 
 /* FullCalendar retains its table geometry, including event position layers.
    The calendar module's own tabForm row (#formCalendar) is a two-column
@@ -148,18 +148,18 @@ html body :is(.flexigrid, .flexigrid div.bDiv, .flexigrid div.hDiv, .flexigrid d
 html body .flexigrid :is(div.hDiv, div.pDiv, div.tDiv, div.sDiv, div.mDiv) { background: var(--akzfa-surface-2) !important; height: auto; min-height: 44px; padding: 6px; }
 html body .flexigrid :is(td, th, div.pGroup, div.pPageStat) { background: transparent !important; color: var(--akzfa-text-soft); border-color: var(--akzfa-border); font-size: 13px; }
 html body :is(.ui-jqgrid, .ui-jqgrid-view, .ui-jqgrid-hdiv, .ui-jqgrid-bdiv, .ui-jqgrid-pager) { max-width: 100%; background: var(--akzfa-surface); color: var(--akzfa-text); border-color: var(--akzfa-border); }
-html body .akzfa-hardware { width: 100% !important; table-layout: fixed; }
-html body .akzfa-hardware > tbody > tr > td { padding: 12px !important; width: auto !important; color: var(--akzfa-text); }
-html body .akzfa-hardware > tbody > tr.filterForm > td { vertical-align: top; background: var(--akzfa-surface-2) !important; border: 1px solid var(--akzfa-border); }
-html body .akzfa-hardware :is(.textConf, .table_navigation_row, fieldset) { color: var(--akzfa-text); background: var(--akzfa-surface) !important; border-color: var(--akzfa-border); }
-html body .akzfa-hardware td[style*="background-color:#EFEFEF"], html body .akzfa-hardware td[style*="background-color:white"] { background-color: var(--akzfa-surface-2) !important; color: var(--akzfa-text); }
-html body .akzfa-hardware .table_navigation_row { overflow-x: auto; }
-html body .akzfa-hardware .table_title_row { width: auto; }
-html body .akzfa-hardware :is(.textConf, #port_desc, .sombreado, .filterForm2) { color: var(--akzfa-text); }
+html body :is(.akzfa-hardware, .voiz-hardware) { width: 100% !important; table-layout: fixed; }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr > td { padding: 12px !important; width: auto !important; color: var(--akzfa-text); }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr.filterForm > td { vertical-align: top; background: var(--akzfa-surface-2) !important; border: 1px solid var(--akzfa-border); }
+html body :is(.akzfa-hardware, .voiz-hardware) :is(.textConf, .table_navigation_row, fieldset) { color: var(--akzfa-text); background: var(--akzfa-surface) !important; border-color: var(--akzfa-border); }
+html body :is(.akzfa-hardware, .voiz-hardware) td[style*="background-color:#EFEFEF"], html body :is(.akzfa-hardware, .voiz-hardware) td[style*="background-color:white"] { background-color: var(--akzfa-surface-2) !important; color: var(--akzfa-text); }
+html body :is(.akzfa-hardware, .voiz-hardware) .table_navigation_row { overflow-x: auto; }
+html body :is(.akzfa-hardware, .voiz-hardware) .table_title_row { width: auto; }
+html body :is(.akzfa-hardware, .voiz-hardware) :is(.textConf, #port_desc, .sombreado, .filterForm2) { color: var(--akzfa-text); }
 html body .akzfa-module-frame { display: block; border: 0; width: 100%; min-width: 0; background: var(--akzfa-surface); }
 /* Embedded PBX keeps technical English fields LTR, with an RTL navigation rail. */
-html body .akzfa-pbx-layout { width: 100%; table-layout: fixed; border-spacing: 16px 0; }
-html body .akzfa-pbx-navigation { width: 210px; direction: rtl; vertical-align: top; }
+html body :is(.akzfa-pbx-layout, .voiz-pbx-layout) { width: 100%; table-layout: fixed; border-spacing: 16px 0; }
+html body :is(.akzfa-pbx-navigation, .voiz-pbx-navigation) { width: 210px; direction: rtl; vertical-align: top; }
 html body #content_pbx { min-width: 0; direction: rtl; text-align: right; overflow-wrap: anywhere; }
 html body #content_pbx :is(table, fieldset, form, .rnav) { max-width: 100%; }
 html body #content_pbx :is(input, select, textarea) { max-width: 100%; }
@@ -212,12 +212,12 @@ html body.akzfa-phone .akzfa-phone-heading h1 { margin: 0; }
 @media (max-width: 767px) {
   html body.akzfa-phone { padding: 12px; }
   html body.akzfa-phone :is(.panel, #dialer_panel) { padding: 12px; }
-  html body .akzfa-pbx-layout, html body .akzfa-pbx-layout > tbody, html body .akzfa-pbx-layout > tbody > tr, html body .akzfa-pbx-layout > tbody > tr > td { display: block; width: 100%; }
-  html body .akzfa-pbx-navigation { margin-bottom: 16px; }
+  html body :is(.akzfa-pbx-layout, .voiz-pbx-layout), html body :is(.akzfa-pbx-layout, .voiz-pbx-layout) > tbody, html body :is(.akzfa-pbx-layout, .voiz-pbx-layout) > tbody > tr, html body :is(.akzfa-pbx-layout, .voiz-pbx-layout) > tbody > tr > td { display: block; width: 100%; }
+  html body :is(.akzfa-pbx-navigation, .voiz-pbx-navigation) { margin-bottom: 16px; }
   html body #applet_grid { grid-template-columns: minmax(0, 1fr); }
   html body table#applet_grid, html body table#applet_grid > tbody, html body table#applet_grid > tbody > tr, html body table#applet_grid > tbody > tr > .appletcolumn { display: block !important; width: 100% !important; }
   html body #applet_grid .appletwindow_content { padding: 12px; }
-  html body .akzfa-hardware, html body .akzfa-hardware > tbody, html body .akzfa-hardware > tbody > tr, html body .akzfa-hardware > tbody > tr > td { display: block; width: 100% !important; }
+  html body :is(.akzfa-hardware, .voiz-hardware), html body :is(.akzfa-hardware, .voiz-hardware) > tbody, html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr, html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr > td { display: block; width: 100% !important; }
   html body .fc .fc-header, html body .fc .fc-header > tbody, html body .fc .fc-header > tbody > tr { display: block; }
   html body .fc .fc-header > tbody > tr > td { display: inline-block; width: auto; max-width: 100%; text-align: center; }
   html body .calendar-env .calendar-body .fc-header :is(.fc-header-left, .fc-header-right, .fc-header-center) { display: block; }
@@ -225,5 +225,5 @@ html body.akzfa-phone .akzfa-phone-heading h1 { margin: 0; }
   html body .fc .fc-header h2 { font-size: 16px; }
   html body .fc :is(th, td.fc-day-header) { font-size: 11px; }
   html body #calendar_buttonbox :is(.button, .btn) { width: 100%; }
-  html body.akzfa-cdr-page { padding: 12px; }
+  html body:is(.akzfa-cdr-page, .voiz-cdr-page) { padding: 12px; }
 }
