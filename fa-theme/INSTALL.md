@@ -1,42 +1,53 @@
-# Installation and recovery
+# راهنمای نصب، به‌روزرسانی و بازگردانی
 
-The package is a theme for an **existing** Issabel server. It does not install or upgrade Issabel. Copy or extract a complete language branch on the server, then run:
+این بسته فقط پوستهٔ یک ایزابلِ نصب‌شده را مدیریت می‌کند؛ نصب‌کنندهٔ مرکز تلفن یا بستهٔ زبان نیست.
+
+## پیش‌نیازها
+
+- دسترسی root، Bash نسخهٔ ۴ یا بالاتر، ابزارهای استاندارد coreutils و findutils، دستور `flock` و `sqlite3`.
+- مسیرهای استاندارد `/var/www/html`، `/var/www/html/themes/tenant` و `/var/www/db/settings.db`.
+- برای فعال‌سازی فارسی، فایل زبان موجود `/var/www/html/lang/fa.lang`. ترجمهٔ تمام افزونه‌ها و موتور تقویم جلالی همراه این پوسته نصب نمی‌شوند.
+
+بستهٔ RPM چارچوب ایزابل به coreutils و sqlite وابسته است. نبودن پیش‌نیاز یا نامعتبر بودن مسیرها پیش از استقرار پوسته باعث توقف می‌شود. نصب‌کننده بسته‌ای از اینترنت دریافت نمی‌کند و تنظیمات مخزن سیستم‌عامل را تغییر نمی‌دهد.
+
+## نصب یا ارتقا
+
+آخرین بستهٔ شاخهٔ fa را دریافت و در پوشهٔ کامل آن اجرا کنید:
 
 ```sh
 sudo bash install.sh
 ```
 
-This installs and activates that edition and selects its language without prompts, downloads, Node.js, npm, or a build step. Sign out and sign in again to refresh the existing session. A browser may also need a reload for the new assets.
+این دستور پوسته و زبان فارسی را انتخاب می‌کند. هیچ پرسش تعاملی یا مرحلهٔ ساخت روی سرور وجود ندارد. برای نصب بدون تغییر انتخاب فعلی:
 
 ```sh
-sudo bash install.sh --no-activate  # install files while preserving the selection
-sudo bash uninstall.sh            # restore the previous selection when AKZ is active
+sudo bash install.sh --no-activate
 ```
 
-The old `contrib/<theme>-theme/install.sh --activate` entry point remains supported.
+ورودی قبلی `contrib/akzfa-theme/install.sh --activate` نیز پشتیبانی می‌شود. برای ارتقا لازم نیست ابتدا uninstall را اجرا کنید. **اجرای دوبارهٔ نصب‌کننده از فایل‌های قدیمی، به‌روزرسانی محسوب نمی‌شود.** ابتدا با `git pull --ff-only` روی شاخهٔ fa یا دریافت ZIP جدید، خود بسته را به‌روز کنید. خروجی نصب باید شمارهٔ نسخهٔ مورد انتظار را نشان دهد.
 
-## Prerequisites
+پس از نصب، خارج و دوباره وارد شوید. این نسخه برای CSS و JS نشانی `?v=2.0.1` دارد. نصب‌کننده زمان فایل‌های کپی‌شدهٔ همین پوسته را تازه می‌کند تا فایل‌های آرشیو قدیمی مانع تشخیص تغییر قالب توسط Smarty نشوند. کش مشترک و نشست‌ها پاک نمی‌شوند. اگر هنوز فایل قدیمی دیده می‌شود، نسخهٔ چاپ‌شده، پوستهٔ انتخاب‌شده و کش مرورگر یا پراکسی را بررسی کنید؛ بدون مشاهدهٔ سرور نمی‌توان علت را قطعی دانست.
 
-- Standard paths: `/var/www/html`, `/var/www/html/themes/tenant`, `/var/www/db/settings.db`.
-- Root, Bash 4+, GNU coreutils/findutils, util-linux `flock`, and `sqlite3`. These are system tools; Issabel's framework RPM explicitly requires coreutils and sqlite. Missing prerequisites cause an error before theme deployment. The installer does not change repositories or install unrelated packages.
-- Persian activation additionally requires the installed `/var/www/html/lang/fa.lang`. The theme does not supply translations for every third-party module or install a Jalali calendar engine.
+## محدودهٔ تغییرات و حفاظت از داده
 
-## Changes made on the server
+فایل‌های پوسته در `/var/www/html/themes/akzfa` و وضعیت خصوصی در `/var/lib/issabel/akzfa-theme` قرار می‌گیرند. قفل مشترک دو نسخه در `/var/lib/issabel/akz-themes` است. فعال‌سازی فقط دو ردیف `theme` و `language` را در یک تراکنش SQLite تغییر می‌دهد؛ فایل پایگاه داده جایگزین نمی‌شود.
 
-Only `/var/www/html/themes/akz` or `akzfa`, private state under `/var/lib/issabel/<theme>-theme`, and the shared lock under `/var/lib/issabel/akz-themes` are managed. Activation updates exactly the `theme` and `language` rows in one SQLite transaction. It never replaces the database file, clears caches, restarts services, changes ownership of the database, or touches call records, users, dialplans, recordings, firewall rules or module files. Theme files are root-owned and readable by the web server. SELinux labels are restored at the final destination when restorecon is available.
+نصب‌کننده مسیرهای دارای پیوند نمادین، فایل‌های غیرعادی بسته، وضعیت با مالکیت ناامن و پوشهٔ پوستهٔ مدیریت‌نشده را رد می‌کند. فایل‌ها ابتدا در محل موقت آماده می‌شوند؛ نسخهٔ قبلی و انتخاب‌های لازم برای بازیابی حفظ می‌شوند. فایل‌های پوسته مالکیت root و دسترسی خواندن برای وب‌سرور دارند. در صورت وجود `restorecon`، برچسب SELinux در مقصد نهایی اصلاح می‌شود.
 
-Both editions share a lock. The installer rejects symbolic-link destinations, special files in the package, unmanaged theme directories, unsafe state ownership, and unexpected settings. It stages the package, saves the previous deployment and settings, and attempts recovery on ordinary errors and catchable interruption. A database guard rejects activation if the theme/language selection changed during preparation.
+شماره‌های داخلی، کاربران، ضبط‌ها، گزارش تماس، dialplan، سرویس‌ها، دیوار آتش و فایل‌های ماژول‌ها تغییر نمی‌کنند. بخش وب‌فون ناامنِ به‌جامانده از نسخهٔ اولیه داخل پوسته توزیع نمی‌شود؛ وب‌فون مستقل سرور تحت مدیریت برنامهٔ خودش می‌ماند.
 
-Each upgrade retains a private `backup-*` directory. Automatic rollback does **not** promise crash consistency for power loss or SIGKILL: file replacement and SQLite commit cannot form one atomic transaction. In that case inspect the printed recovery paths before repeating installation. Backups consume space and are not automatically pruned.
+## بازگردانی انتخاب قبلی
 
-## Recovery semantics
+```sh
+sudo bash uninstall.sh
+```
 
-The saved selection is captured when activating from a different theme, not during an inactive file-only install. Repeat installation while active retains that recovery record. Records from the old AKZ installer are imported as validated values; saved SQL is never executed.
+اگر akzfa همچنان فعال باشد، پوستهٔ قبلی برگردانده می‌شود. زبان قبلی فقط وقتی بازمی‌گردد که زبان فعلی هنوز همان مقداری باشد که نصب‌کننده انتخاب کرده است؛ انتخاب جدید مدیر حفظ می‌شود. اگر پوشهٔ پوستهٔ قبلی وجود نداشته باشد، تنظیمات تغییر نمی‌کنند.
 
-Uninstall restores the saved theme only when this edition is still selected. It restores the saved language only if the current language still equals the language selected by the installer. Later administrative choices are preserved. **Theme files and recovery records remain installed**: the other edition may need them for its own rollback. This command deactivates the theme; it is not a destructive purge. If the saved theme directory is missing, it exits without changing settings.
+فایل‌های پوسته و سوابق بازیابی حذف نمی‌شوند، زیرا نسخهٔ انگلیسی ممکن است برای بازگشت به آن‌ها نیاز داشته باشد. نصب مجددِ پوستهٔ فعال سابقهٔ قبلی را حفظ می‌کند. انتخاب پوستهٔ AKZ از یک پوستهٔ دیگر، سابقهٔ بازگشت تازه‌ای می‌سازد. سابقهٔ نصب‌کنندهٔ قدیمی به‌صورت مقادیر معتبر خوانده می‌شود؛ فایل SQL ذخیره‌شده اجرا نمی‌شود.
 
-The Persian package no longer distributes its inherited phone backend. A separately installed webphone remains owned by that application. Upgrading AKZ replaces the whole managed theme directory, so previously bundled phone files are removed from the served directory and retained only in private backups.
+## خطا و وضعیت ارزیابی
 
-## Reproducibility and status
+هر ارتقا پوشهٔ خصوصی `backup-*` دارد؛ پشتیبان‌ها خودکار حذف نمی‌شوند. در خطاهای معمول و سیگنال‌های قابل دریافت، بازگردانی تلاش می‌شود. جابه‌جایی فایل و تراکنش پایگاه داده یک عملیات اتمی واحد نیستند؛ قطع برق یا SIGKILL تضمین بازیابی خودکار ندارد. در این وضعیت ابتدا مسیرهای بازیابی چاپ‌شده را بررسی کنید.
 
-Use a reviewed commit or release archive and retain its commit ID. The prebuilt CSS is distributed with the editable sources; no network access is needed during installation. Optional developer build instructions are in `contrib/`. Source review and CSS generation were performed for this revision. **No browser, installation, unit, integration, automated, security, or compatibility tests were run.** Server compatibility and visual equivalence remain unverified.
+هیچ آزمون مرورگر، نصب، امنیت یا سازگاری برای این اصلاحات اجرا نشده است. تولید CSS و مقایسهٔ سورس جایگزین ارزیابی روی سرور نیست.

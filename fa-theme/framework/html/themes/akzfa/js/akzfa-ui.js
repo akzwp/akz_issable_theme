@@ -377,7 +377,16 @@
         if (window.MutationObserver) { new MutationObserver(markSelected).observe(current, { attributes: true, attributeFilter: ['style'] }); }
         markSelected();
     }
+    // VOIZ owns these module templates; keep its classes and handlers intact.
+    function adoptModuleClasses(scope) {
+        ['contact-form', 'contact-fields', 'pbx-layout', 'pbx-navigation', 'hardware', 'hardware-empty', 'form-table', 'cdr-page', 'gauges'].forEach(function (name) {
+            all('.voiz-' + name, scope || doc).forEach(function (element) {
+                element.classList.add('akzfa-' + name);
+            });
+        });
+    }
     function enhanceContent() {
+        adoptModuleClasses();
         enhanceNetworkControls();
         enhanceMessages();
         initColorSwatches();
@@ -465,6 +474,7 @@
                 // Only same-origin module documents; cross-origin integrations retain their owner UI.
                 if (!page || !page.head || frame.contentWindow.location.origin !== location.origin) { return; }
                 page.documentElement.setAttribute('data-theme', currentTheme());
+                adoptModuleClasses(page);
                 if (!page.getElementById('akzfa-frame-theme')) {
                     var css = page.createElement('link'); css.id = 'akzfa-frame-theme'; css.rel = 'stylesheet'; css.href = frameStyleHref;
                     page.head.appendChild(css); page.body.classList.add('akzfa-embedded');

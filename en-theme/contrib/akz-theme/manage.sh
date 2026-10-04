@@ -22,13 +22,18 @@ esac
 [[ $action == install || $action == uninstall ]] || die 'Unknown operation.'
 [[ $action != uninstall || $# -eq 0 ]] || die 'Uninstall takes no options.'
 [[ $EUID -eq 0 ]] || die 'Run as root.'
-for cmd in cp mv install stat find sqlite3 flock readlink mktemp chmod chown date sed; do
+for cmd in cp mv install stat find sqlite3 flock readlink mktemp chmod chown date sed touch; do
   command -v "$cmd" >/dev/null || die "Required Issabel system command is missing: $cmd"
 done
 
 here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 package_root=$(cd -- "$here/../.." && pwd -P)
 source_dir="$package_root/framework/html/themes/$theme"
+package_version=unknown
+if [[ -f "$package_root/VERSION" ]]; then
+  package_version=$(<"$package_root/VERSION")
+  [[ $package_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die 'Invalid package version.'
+fi
 themes=/var/www/html/themes
 destination="$themes/$theme"
 db=/var/www/db/settings.db
@@ -136,6 +141,9 @@ trap 'exit 130' INT
 trap 'exit 143' TERM
 install -d -m 755 "$stage/new"
 cp -a -- "$source_dir/." "$stage/new/"
+# Archive timestamps can be older than Smarty's compiled templates. Refresh
+# this theme's source timestamps without deleting shared caches or sessions.
+find "$stage/new" -type f -exec touch -- {} +
 find "$stage/new" -type d -exec chmod 755 {} +
 find "$stage/new" -type f -exec chmod 644 {} +
 chown -R root:root "$stage/new"
@@ -171,5 +179,9 @@ fi
 trap - EXIT HUP INT TERM
 # Keep the previous deployment outside the web root; backup/theme is already complete.
 mv -- "$stage" "$backup/transaction" || echo "Private staging directory retained: $stage" >&2
-printf 'Installed %s. Recovery files: %s\n' "$theme" "$backup"
+printf 'Installed %s, version %s. Recovery files: %s\n' "$theme" "$package_version" "$backup"
+if [[ $theme == akzfa ]]; then
+  printf 'پوستهٔ فارسی AKZ نسخهٔ %s نصب شد.\n' "$package_version"
+  echo 'نصب دوباره از پوشهٔ قدیمی، نسخهٔ جدید را دریافت نمی‌کند؛ ابتدا بسته را به‌روز کنید.'
+fi
 if [[ $activate == true ]]; then echo 'Theme and language selected. Sign out and sign in again.'; fi

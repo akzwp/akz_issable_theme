@@ -645,13 +645,13 @@ html body.akzfa-embedded .alert-warning { background: var(--akzfa-warning-soft) 
 html body.akzfa-embedded .stat :is(.stat-value, .stat-number, .count) { color: var(--akzfa-heading) !important; }
 
 /* Issue 12 — Hardware detection text contrast (یافتن سخت‌افزار). */
-html body .akzfa-hardware :is(td, th, label, span, div, legend, p) { color: var(--akzfa-text); }
-html body .akzfa-hardware :is(legend, th, .moduleTitle, h2, h3) { color: var(--akzfa-heading) !important; font-weight: 600; }
-html body .akzfa-hardware fieldset { border: 1px solid var(--akzfa-border); border-radius: 12px; background: var(--akzfa-surface); padding: 14px 16px; margin: 0 0 14px; }
-html body .akzfa-hardware fieldset legend { padding: 0 10px; background: none; }
-html body .akzfa-hardware td img { vertical-align: middle; margin-inline-end: 8px; }
-html body .akzfa-hardware :is([style*="color:red"], [style*="color: red"], .required) { color: var(--akzfa-danger) !important; }
-html body .akzfa-hardware div[style*="text-align:center"] { color: var(--akzfa-muted); }
+html body :is(.akzfa-hardware, .voiz-hardware) :is(td, th, label, span, div, legend, p) { color: var(--akzfa-text); }
+html body :is(.akzfa-hardware, .voiz-hardware) :is(legend, th, .moduleTitle, h2, h3) { color: var(--akzfa-heading) !important; font-weight: 600; }
+html body :is(.akzfa-hardware, .voiz-hardware) fieldset { border: 1px solid var(--akzfa-border); border-radius: 12px; background: var(--akzfa-surface); padding: 14px 16px; margin: 0 0 14px; }
+html body :is(.akzfa-hardware, .voiz-hardware) fieldset legend { padding: 0 10px; background: none; }
+html body :is(.akzfa-hardware, .voiz-hardware) td img { vertical-align: middle; margin-inline-end: 8px; }
+html body :is(.akzfa-hardware, .voiz-hardware) :is([style*="color:red"], [style*="color: red"], .required) { color: var(--akzfa-danger) !important; }
+html body :is(.akzfa-hardware, .voiz-hardware) div[style*="text-align:center"] { color: var(--akzfa-muted); }
 
 /* Issue 15 — Add-ons manager (flexigrid lists). */
 html body .flexigrid { display: flex; flex-direction: column; width: 100% !important; border: 1px solid var(--akzfa-border); border-radius: 12px; background: var(--akzfa-surface) !important; overflow: hidden; }

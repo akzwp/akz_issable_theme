@@ -1,37 +1,23 @@
-# Source and third-party notices
+# منشأ کد و اطلاعیهٔ اجزای ثالث
 
-AKZ contributes the interface layout, appearance, accessibility improvements, Persian RTL
-presentation, and packaging. This attribution does not claim authorship of the Issabel framework
-or its bundled libraries.
+مشارکت AKZ شامل چیدمان، ظاهر، کنترل‌های رابط، ارائهٔ فارسی و بسته‌بندی است. این انتساب به معنی تألیف چارچوب ایزابل یا کتابخانه‌های همراه آن نیست. متن اصلی مجوزها و سرصفحه‌های حقوق مؤلف تغییر داده نشده‌اند.
 
-## Framework-derived code
+## کد مشتق‌شده از چارچوب
 
-The theme templates and setup code derive from the Issabel framework (via the `voipiran/VOIZ`
-Persian distribution, GPL-2.0-or-later) and retain existing PaloSanto Solutions and other
-file-level copyright notices. The Issabel framework describes its licensing as GPLv2 or later.
-A copy of that license text is included in `LICENSES/GPL-2.0-or-later.txt`.
+قالب‌ها و hook پوسته از چارچوب ایزابل، با واسطهٔ توزیع فارسی VOIZ، مشتق شده‌اند. سرصفحه‌های PaloSanto Solutions و دیگر پدیدآورندگان حفظ می‌شوند. متن GPL همراه بسته در `LICENSES/GPL-2.0-or-later.txt` و متن انتساب MIT به‌جامانده از منشأ در پوشهٔ LICENSES قرار دارد.
 
-Reference: <https://github.com/IssabelFoundation/framework> and <https://github.com/voipiran/VOIZ>.
+منابع: [چارچوب ایزابل](https://github.com/IssabelFoundation/framework) و [VOIZ](https://github.com/voipiran/VOIZ).
 
-## Bundled components
+## اجزای همراه
 
-- Bootstrap styles and JavaScript retain their embedded copyright and license notices.
-- jQuery Validation, GSAP, Joinable, Neon assets, and other legacy libraries retain their existing
-  source headers and applicable original terms.
-- Glyphicons font assets and generic framework images are included as existing framework
-  dependencies; their original attribution and terms continue to apply.
-- **Vazirmatn font** (`framework/html/themes/akzfa/fonts/vazirmatn/*.woff2`):
-  Copyright 2015 The Vazirmatn Project Authors (<https://github.com/rastikerdar/vazirmatn>),
-  licensed under the SIL Open Font License 1.1 — see `LICENSES/Vazirmatn/OFL-1.1.txt`.
-- Tailwind CSS is a development dependency, pinned by `package-lock.json`; its package contains its
-  own license. Development dependencies are not bundled with the server installation.
+- Bootstrap، jQuery Validation، GSAP، Joinable و دارایی‌های Neon سرصفحه‌ها و شرایط اصلی خود را حفظ می‌کنند.
+- تصاویر عمومی چارچوب و فونت‌های Glyphicons با انتساب و شرایط اولیهٔ خود باقی می‌مانند.
+- فونت وزیرمتن در `fonts/vazirmatn` متعلق به پدیدآورندگان پروژهٔ [Vazirmatn](https://github.com/rastikerdar/vazirmatn) است؛ متن SIL Open Font License 1.1 در `LICENSES/Vazirmatn/OFL-1.1.txt` آمده است.
+- تعریف آیکون‌های Font Awesome در `ui/icons.css` از CSS نهاییِ محلی بازیابی شده و به فونت‌های موجود در `fonts/fontawesome` اشاره می‌کند. انتساب Dave Gandy حفظ شده است؛ CSS تحت MIT و فونت تحت SIL OFL 1.1 است.
+- Tailwind وابستگی اختیاری توسعه است و نسخهٔ آن در package-lock.json ثبت شده است. مجوز خود را دارد و همراه ابزارهای توسعه روی سرور نصب نمی‌شود.
 
-## Rename map (from the upstream VOIZ presentation layer)
+## منشأ و تغییر نام
 
-`vitenant→akzfa`, `voiz-*→akzfa-*`, `voiz-theme→akzfa-theme`, `--voiz-*→--akzfa-*`.
-Distribution-specific branding configuration is not required. Original file notices and source attribution are retained.
+منبع رابط، کار محلی AKZ روی VOIZ است. مسیر پوسته از vitenant به akzfa و نام‌های متعلق به پوسته از voiz-* به akzfa-* تبدیل شده‌اند. نام‌های متعلق به قالب‌های ماژول‌ها حذف نشده‌اند؛ لایهٔ سازگاری هر دو نام لازم را می‌پذیرد. تنظیمات برند در /etc پیش‌نیاز این بسته نیست.
 
-## Export provenance
-
-The interface source snapshot used for this package was the `test2` branch of `akzwp/VOIZ`
-(redesign layer v7.1.x). No git history or machine-specific configuration is included.
+در نسخهٔ ۲.۰.۱، اصلاحات مستقیم CSS نهاییِ محلی به `ui/icons.css` و `ui/runtime-fixes.css` منتقل شده‌اند تا ساخت مجدد آن‌ها را از بین نبرد. این تغییرات ادعای مالکیت بر کل اثر یا تأیید رسمی پروژه‌های بالادستی نیستند.

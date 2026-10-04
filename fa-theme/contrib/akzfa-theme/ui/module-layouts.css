@@ -77,46 +77,46 @@ html body.akzfa-pbx #syslog .notification_buttons { right: auto; left: 4px; top:
 html body.akzfa-pbx .syslog_text { padding: 0; }
 
 /* Contact fields keep their original names, visibility and submission path. */
-html body .akzfa-contact-form { width: 100%; max-width: 1100px; margin-inline: auto; table-layout: auto; }
-html body .akzfa-contact-form > tbody > tr > td { padding: 8px; }
-html body .akzfa-contact-form .tabForm { display: block; table-layout: auto; border-spacing: 0 12px; }
-html body .akzfa-contact-form .tabForm > tbody { display: block; width: 100%; }
-html body .akzfa-contact-form .tabForm > tbody > tr:not(#tr_new_contact) { width: 100%; }
-html body .akzfa-contact-form #tr_new_contact { display: grid; grid-template-columns: 140px minmax(0, 1fr); align-items: start; gap: 24px; }
-html body .akzfa-contact-form #tr_new_contact > td { display: block; width: auto !important; padding: 0 !important; }
-html body .akzfa-contact-form #tr_new_contact > td:first-child { padding-top: 28px !important; text-align: center !important; }
-html body .akzfa-contact-form #tr_new_contact > td:first-child img { width: 110px; height: 110px; max-width: 100%; object-fit: contain; border: 1px solid var(--akzfa-border); border-radius: 12px; background: var(--akzfa-surface-2); padding: 12px; }
-html body .akzfa-contact-fields, html body .akzfa-contact-fields > tbody { display: block; width: 100%; }
-html body .akzfa-contact-fields > tbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
-html body .akzfa-contact-fields > tbody > tr { display: flex; flex-direction: column; min-width: 0; gap: 6px; }
-html body .akzfa-contact-fields > tbody > tr > td { display: block; width: 100% !important; padding: 0 !important; text-align: right !important; }
-html body .akzfa-contact-fields > tbody > tr:has(textarea), html body .akzfa-contact-fields > tbody > tr:has(input[type="file"]), html body .akzfa-contact-fields > tbody > tr:has(input[type="radio"]) { grid-column: 1 / -1; }
-html body .akzfa-contact-fields > tbody > tr:has(input[type="radio"]) { flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
-html body .akzfa-contact-fields > tbody > tr:has(input[type="radio"]) > td { width: auto !important; }
-html body .akzfa-contact-fields :is(input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]), select, textarea) { width: 100% !important; min-width: 0; max-width: 100% !important; }
-html body .akzfa-contact-fields :is(input[name*="phone"], input[name^="fax"], input[name="email"]) { direction: ltr; text-align: left; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) { width: 100%; max-width: 1100px; margin-inline: auto; table-layout: auto; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) > tbody > tr > td { padding: 8px; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) .tabForm { display: block; table-layout: auto; border-spacing: 0 12px; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) .tabForm > tbody { display: block; width: 100%; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) .tabForm > tbody > tr:not(#tr_new_contact) { width: 100%; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) #tr_new_contact { display: grid; grid-template-columns: 140px minmax(0, 1fr); align-items: start; gap: 24px; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) #tr_new_contact > td { display: block; width: auto !important; padding: 0 !important; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) #tr_new_contact > td:first-child { padding-top: 28px !important; text-align: center !important; }
+html body :is(.akzfa-contact-form, .voiz-contact-form) #tr_new_contact > td:first-child img { width: 110px; height: 110px; max-width: 100%; object-fit: contain; border: 1px solid var(--akzfa-border); border-radius: 12px; background: var(--akzfa-surface-2); padding: 12px; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields), html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody { display: block; width: 100%; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr { display: flex; flex-direction: column; min-width: 0; gap: 6px; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr > td { display: block; width: 100% !important; padding: 0 !important; text-align: right !important; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr:has(textarea), html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr:has(input[type="file"]), html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr:has(input[type="radio"]) { grid-column: 1 / -1; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr:has(input[type="radio"]) { flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody > tr:has(input[type="radio"]) > td { width: auto !important; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) :is(input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]), select, textarea) { width: 100% !important; min-width: 0; max-width: 100% !important; }
+html body :is(.akzfa-contact-fields, .voiz-contact-fields) :is(input[name*="phone"], input[name^="fax"], input[name="email"]) { direction: ltr; text-align: left; }
 html body .akzfa-module-address_book :is(table.tabla_listado, table.issabel-standard-table) { width: max-content; min-width: 100%; table-layout: auto; }
 html body .akzfa-module-address_book :is(table.tabla_listado, table.issabel-standard-table) > tbody > tr > td { min-width: 100px; padding: 12px 16px !important; white-space: nowrap !important; }
 html body .akzfa-module-address_book :is(table.tabla_listado, table.issabel-standard-table) > tbody > tr > td:first-child { min-width: 48px; width: 48px; }
 html body .akzfa-module-address_book .neo-table-header-row-filter { height: auto !important; padding: 0 !important; }
 
 /* Hardware status retains device colors while the legend follows the theme. */
-html body .akzfa-hardware { display: block; direction: rtl; table-layout: auto; border-spacing: 0 12px; }
-html body .akzfa-hardware > tbody, html body .akzfa-hardware > tbody > tr { display: block; width: 100%; }
-html body .akzfa-hardware > tbody > tr:not(.filterForm) > td { display: block; width: 100%; }
-html body .akzfa-hardware > tbody > tr.filterForm { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(280px, 1fr); gap: 16px; }
-html body .akzfa-hardware > tbody > tr.filterForm > td { display: block; min-width: 0; padding: 16px !important; border-radius: 10px; }
-html body .akzfa-hardware > tbody > tr.filterForm > td:nth-child(2):not(:has(.hourglass[style*="display: block"])) { padding: 0 !important; border: 0; }
-html body .akzfa-hardware :is(fieldset, .fielform, #optionsAdvance) { width: auto; max-width: 100%; height: auto; padding: 12px; font: inherit; color: var(--akzfa-text) !important; }
-html body .akzfa-hardware .fielform { margin: 0; }
-html body .akzfa-hardware .fielform table { width: 100%; float: none; }
-html body .akzfa-hardware .fielform td { padding: 6px; color: var(--akzfa-text) !important; text-align: start; }
-html body .akzfa-hardware .fielform td:first-child { width: 40px; }
-html body .akzfa-hardware .sombreado { color: var(--akzfa-heading) !important; font: 600 14px/1.8 Vazirmatn, sans-serif; }
-html body .akzfa-hardware :is(td[style*="background-color:white"], table[style*="background-color:white"]) { background-color: var(--akzfa-surface-2) !important; border-color: var(--akzfa-border) !important; }
-html body .akzfa-hardware #optionsAdvance { line-height: 2.4; }
-html body .akzfa-hardware .table_navigation_row { background: var(--akzfa-surface) !important; border-color: var(--akzfa-border); }
-html body .akzfa-hardware-empty { padding: 16px; margin-top: 16px; border: 1px solid var(--akzfa-border); border-radius: 8px; color: var(--akzfa-muted); text-align: center; }
+html body :is(.akzfa-hardware, .voiz-hardware) { display: block; direction: rtl; table-layout: auto; border-spacing: 0 12px; }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody, html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr { display: block; width: 100%; }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr:not(.filterForm) > td { display: block; width: 100%; }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr.filterForm { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(280px, 1fr); gap: 16px; }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr.filterForm > td { display: block; min-width: 0; padding: 16px !important; border-radius: 10px; }
+html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr.filterForm > td:nth-child(2):not(:has(.hourglass[style*="display: block"])) { padding: 0 !important; border: 0; }
+html body :is(.akzfa-hardware, .voiz-hardware) :is(fieldset, .fielform, #optionsAdvance) { width: auto; max-width: 100%; height: auto; padding: 12px; font: inherit; color: var(--akzfa-text) !important; }
+html body :is(.akzfa-hardware, .voiz-hardware) .fielform { margin: 0; }
+html body :is(.akzfa-hardware, .voiz-hardware) .fielform table { width: 100%; float: none; }
+html body :is(.akzfa-hardware, .voiz-hardware) .fielform td { padding: 6px; color: var(--akzfa-text) !important; text-align: start; }
+html body :is(.akzfa-hardware, .voiz-hardware) .fielform td:first-child { width: 40px; }
+html body :is(.akzfa-hardware, .voiz-hardware) .sombreado { color: var(--akzfa-heading) !important; font: 600 14px/1.8 Vazirmatn, sans-serif; }
+html body :is(.akzfa-hardware, .voiz-hardware) :is(td[style*="background-color:white"], table[style*="background-color:white"]) { background-color: var(--akzfa-surface-2) !important; border-color: var(--akzfa-border) !important; }
+html body :is(.akzfa-hardware, .voiz-hardware) #optionsAdvance { line-height: 2.4; }
+html body :is(.akzfa-hardware, .voiz-hardware) .table_navigation_row { background: var(--akzfa-surface) !important; border-color: var(--akzfa-border); }
+html body :is(.akzfa-hardware-empty, .voiz-hardware-empty) { padding: 16px; margin-top: 16px; border: 1px solid var(--akzfa-border); border-radius: 8px; color: var(--akzfa-muted); text-align: center; }
 
 /* The endpoint configurator uses Ember views and its own table classes. */
 html body #endpointConfigApplication { background: var(--akzfa-surface) !important; color: var(--akzfa-text); min-width: 0; }
@@ -147,12 +147,12 @@ html body .akzfa-module-monitoring #CDRreport td audio { display: block; width: 
 @media (max-width: 900px) {
   html body.akzfa-pbx #dashboard { grid-template-columns: minmax(0, 1fr); }
   html body.akzfa-pbx .rnav { float: none; width: 100%; max-width: 100%; margin: 0 0 16px; }
-  html body .akzfa-hardware > tbody > tr.filterForm { grid-template-columns: minmax(0, 1fr); }
+  html body :is(.akzfa-hardware, .voiz-hardware) > tbody > tr.filterForm { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 767px) {
   html body.akzfa-pbx #page_body { padding: 12px; }
   html body.akzfa-pbx .navbar-dropdown.multicolumn { column-count: 1; }
-  html body .akzfa-contact-form #tr_new_contact { grid-template-columns: minmax(0, 1fr); }
-  html body .akzfa-contact-form #tr_new_contact > td:first-child { padding-top: 0 !important; }
-  html body .akzfa-contact-fields > tbody { grid-template-columns: minmax(0, 1fr); }
+  html body :is(.akzfa-contact-form, .voiz-contact-form) #tr_new_contact { grid-template-columns: minmax(0, 1fr); }
+  html body :is(.akzfa-contact-form, .voiz-contact-form) #tr_new_contact > td:first-child { padding-top: 0 !important; }
+  html body :is(.akzfa-contact-fields, .voiz-contact-fields) > tbody { grid-template-columns: minmax(0, 1fr); }
 }

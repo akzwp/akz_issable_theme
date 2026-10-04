@@ -10,7 +10,11 @@ English/LTR and Persian/RTL editions of the AKZ interface, with compiled assets 
 
 No Node.js, npm, asset compilation or downloads run on the server. Installation activates the edition and its language by default. Standard Issabel system tools and layout are required; the Persian edition also requires the existing Persian language pack. See [English installation](en-theme/INSTALL.md) or [Persian installation](fa-theme/INSTALL.md).
 
-## Changes in this revision
+## Persian 2.0.1 follow-up
+
+The Persian branch now has Persian documentation. Direct edits previously present only in the local runtime CSS have been recovered into its build sources: icon definitions, calendar presentation and the network switch. VOIZ module class compatibility is retained. Installers refresh deployed source timestamps and print the package version; reinstalling an old download does not fetch a new version. See the [Persian update guide](fa-theme/README.md).
+
+## Changes in the initial revision
 
 - Restore the newer local calendar dialog and color-picker changes missing from the GitHub exports; align switches and radio buttons across both editions.
 - Correct English color labels, popup centering and stale selector namespaces; add missing Persian icon styles and remove unused login/demo script loading.

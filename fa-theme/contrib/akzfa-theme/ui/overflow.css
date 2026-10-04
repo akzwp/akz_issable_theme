@@ -61,7 +61,7 @@ html body :is(.btn, .button, button.submit, .neo-table-toolbar-button, .dt-butto
   overflow-wrap: anywhere;
   word-break: normal;
 }
-html body :is(.neo-module-content, .akzfa-popup-page, .akzfa-cdr-page, .akzfa-embedded)
+html body :is(.neo-module-content, .akzfa-popup-page, :is(.akzfa-cdr-page, .voiz-cdr-page), .akzfa-embedded)
   :is(pre, .confdir) {
   display: block;
   max-width: 100%;
@@ -81,15 +81,15 @@ html body :is(.neo-module-content, .akzfa-popup-page, .akzfa-cdr-page, .akzfa-em
 }
 html body :is(.neo-module-content, .akzfa-popup-page, .akzfa-embedded) code { white-space: break-spaces; overflow-wrap: anywhere; }
 html body pre code { white-space: pre !important; overflow-wrap: normal !important; }
-html body :is(table.tabForm, table.akzfa-form-table) { table-layout: fixed; }
-html body :is(table.tabForm, table.akzfa-form-table) > tbody > tr > td {
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) { table-layout: fixed; }
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) > tbody > tr > td {
   min-width: 0;
   white-space: normal !important;
   overflow-wrap: anywhere;
   text-align: start !important;
 }
-html body :is(table.tabForm, table.akzfa-form-table) :is(.input-group, .form-group, .chosen-container, .select2-container) { min-width: 0; max-width: 100%; }
-html body :is(table.tabForm, table.akzfa-form-table) :is(input, select, textarea) { min-width: 0; max-width: 100% !important; }
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) :is(.input-group, .form-group, .chosen-container, .select2-container) { min-width: 0; max-width: 100%; }
+html body :is(table.tabForm, table:is(.akzfa-form-table, .voiz-form-table)) :is(input, select, textarea) { min-width: 0; max-width: 100% !important; }
 html body :is(table.issabel-standard-table, table.dataTable, table.table, table.tabla_listado, table.listDataTable)
   > tbody > tr > td {
   overflow-wrap: anywhere;
@@ -101,9 +101,9 @@ html body :is(table.issabel-standard-table, table.dataTable, table.table, table.
 .akzfa-table-scroll > table { min-width: 100%; }
 html body :is(.neo-applet-titem, .neo-applet-tdesc, .neo-applet-hd-report-row-left, .neo-applet-hd-report-row-right) { min-width: 0; overflow-wrap: anywhere; }
 html body .neo-applet-processes-row-status-msg { flex: 0 1 auto; max-width: 100%; overflow-wrap: anywhere; }
-html body .akzfa-hardware td { overflow-wrap: anywhere; }
-html body .akzfa-hardware fieldset { min-width: 0; max-width: 100%; }
-html body .akzfa-hardware legend { white-space: normal; overflow-wrap: anywhere; }
+html body :is(.akzfa-hardware, .voiz-hardware) td { overflow-wrap: anywhere; }
+html body :is(.akzfa-hardware, .voiz-hardware) fieldset { min-width: 0; max-width: 100%; }
+html body :is(.akzfa-hardware, .voiz-hardware) legend { white-space: normal; overflow-wrap: anywhere; }
 html body #toast-container > div { overflow-wrap: anywhere; }
 html body label[data-tooltip]::after { max-width: min(320px, calc(100vw - 32px)); white-space: normal; overflow-wrap: anywhere; background: var(--akzfa-surface-3); color: var(--akzfa-text); border: 1px solid var(--akzfa-border); box-shadow: var(--akzfa-popover-shadow); }
 html body .fc .fc-event-title { display: block; min-width: 0; max-width: 100%; }

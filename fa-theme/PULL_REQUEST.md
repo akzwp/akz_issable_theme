@@ -1,43 +1,42 @@
-# Proposal: adopt AKZ English and Persian themes in Issabel
+# پیشنهاد پذیرش پوستهٔ فارسی AKZ در ایزابل و VOIZ
 
-## Problem and proposed result
+## مسئله و نتیجهٔ پیشنهادی
 
-AKZ provides a consistent interface for English/LTR and Persian/RTL users: responsive navigation, searchable modules, light/dark appearance, readable forms and tables, and improved calendar dialogs. The requested destination is to replace the default English and Persian presentation with AKZ, subject to maintainer review and the owner's server evaluation.
+پوستهٔ AKZ رابط فارسی و راست‌چین را با منوی واکنش‌گرا، جست‌وجوی بخش‌ها، فونت محلی وزیرمتن، حالت روشن/تیره و ظاهر هماهنگ فرم‌ها، جدول‌ها و تقویم فراهم می‌کند. هدف، پذیرش آن به‌عنوان جایگزین رابط فارسی فعلی پس از بازبینی نگه‌دارندگان و ارزیابی مالک روی سرور مقصد است.
 
-The implementation first introduces separate `akz` and `akzfa` directories so adoption and rollback remain explicit. Changing defaults for new installations and migrating existing installations should be separate, reviewable release decisions. No automatic fleet-wide migration is included in this contribution.
+در نسخهٔ ۲.۰.۱ تغییرات مستقیم CSS نسخهٔ محلی به سورس قابل نگهداری منتقل شده‌اند؛ آیکون‌ها، فاصلهٔ رویدادهای تقویم، شمارهٔ روزها، انتخاب رنگ و کلید شبکه اصلاح شده‌اند. کلاس‌های قالب‌های موجود VOIZ نیز در کنار نام‌های akzfa پشتیبانی می‌شوند. این تغییرات در محدودهٔ پوسته هستند و قالب یا بک‌اند ماژول‌ها را روی سرور بازنویسی نمی‌کنند.
 
-## Concrete code changes
+## نقشهٔ ادغام
 
-| Source in AKZ main | Destination in framework | Effect |
+| منبع در main مخزن AKZ | مقصد در ایزابل | مقصد پیشنهادی در VOIZ |
 |---|---|---|
-| `en-theme/framework/html/themes/akz/` | `framework/html/themes/akz/` | English shell, templates, compiled CSS and interaction scripts |
-| `fa-theme/framework/html/themes/akzfa/` | `framework/html/themes/akzfa/` | Persian RTL shell and local Vazirmatn fonts |
-| Both `contrib/` directories | `contrib/akz-theme/`, `contrib/akzfa-theme/` | Editable styles, optional developer builds, installation/recovery tools and notices |
+| `fa-theme/framework/html/themes/akzfa/` | `framework/html/themes/akzfa/` | `theme/akzfa/` |
+| `fa-theme/contrib/akzfa-theme/` | `contrib/akzfa-theme/` | `contrib/akzfa-theme/` با تطبیق مسیر خروجی ساخت |
 
-The theme hook `themesetup.php` keeps the existing Smarty assignments and menu/notification integration. Its package version is local; it no longer reads a distribution-specific /etc branding file. `_common/*.tpl` retain the framework content slots, login field names and module requests. Displayed login names are HTML-escaped. Base CSS loads before framework and module headers; the AKZ stylesheet loads after them.
+فایل `themesetup.php` از سازوکار استاندارد Smarty برای منو و اعلان استفاده می‌کند. قالب‌های `_common/*.tpl` محل محتوای چارچوب و نام فیلدهای ورود را نگه می‌دارند؛ نام کاربر برای نمایش HTML escape می‌شود. CSS آماده پس از استایل ماژول‌ها بارگذاری می‌شود و Node.js یا npm در مسیر نصب سرور قرار ندارد. فایل‌های `icons.css` و `runtime-fixes.css` بخشی از سورس رسمی ساخت هستند.
 
-The CSS sources define colors, spacing, navigation, forms, switches, radios, table overflow and dialog layout. The current revision restores local calendar sizing/close-button fixes and named keyboard-operable color swatches, corrects English dialog centering and English color labels, and aligns selectors with each edition's namespace. Compiled CSS is committed. Tailwind is optional authoring tooling and never runs on a PBX.
+## مراحل عملی برای ایزابل
 
-The UI scripts add client-side navigation and presentation behavior. Same-origin embedded PBX documents receive the theme layer while displayed in the shell; cross-origin pages are left to their application. This still requires module compatibility evaluation. The Persian package does not distribute the inherited cookie-based SIP-credential/webphone backend. Existing telephony applications stay separate.
+1. در فورک [IssabelFoundation/framework](https://github.com/IssabelFoundation/framework) از انتشار مقصد شاخهٔ مشارکت بسازید. پوشه‌های جدول بالا را منتقل کنید؛ ریشهٔ مخزن بالادستی را با بستهٔ مستقل جایگزین نکنید.
+2. متغیرهای قالب و hook پوسته را با همان انتشار تطبیق دهید. احراز هویت، ACL، پردازش فرم‌ها و منطق PBX در هسته بمانند.
+3. فایل `issabel-framework.spec` را تطبیق دهید. در مبنای بررسی‌شده، tenant در فهرست بستهٔ اصلی است و themes-extra از themes/* استفاده می‌کند. برای قراردادن akzfa در بستهٔ اصلی، مسیر آن را به فهرست اصلی و استثنای بستهٔ themes-extra اضافه کنید تا دو بسته مالک یک فایل نشوند. تصمیم مشابه برای نسخهٔ انگلیسی akz لازم است.
+4. تغییر پیش‌فرض نصب‌های جدید و مهاجرت نصب‌های موجود را جداگانه تصمیم‌گیری کنید. مهاجرت باید انتخاب قبلی را ثبت کند، پایگاه داده را جایگزین نکند و پوستهٔ قبلی را برای بازگردانی نگه دارد.
 
-## Integration steps
+## مراحل عملی برای VOIZ
 
-1. Create a contribution branch in a fork of [IssabelFoundation/framework](https://github.com/IssabelFoundation/framework), based on the target release. Inspection baseline: `8f0a6f3045cf1608d294036b77aa5e0f3c66cabc` (master). Copy the paths above; do not replace the repository with the standalone AKZ branch.
-2. Preserve upstream copyright headers and the attached license/notices. Reconcile the theme hook and template slots with that exact framework release. Keep authentication, ACL handling and module backends in the host framework.
-3. Update [issabel-framework.spec](https://github.com/IssabelFoundation/framework/blob/8f0a6f3045cf1608d294036b77aa5e0f3c66cabc/issabel-framework.spec): its main file list explicitly includes `/var/www/html/themes/tenant`, while themes-extra uses `themes/*` and excludes tenant. To ship AKZ in the main RPM, add both AKZ directories to the main file list and exclude both from themes-extra to avoid duplicate ownership. Verify the build's source-copy rules include both directories.
-4. After the owner's results are available, agree on new-install defaults for English and Persian in the release's provisioning/settings path. For existing systems, offer an explicit migration that changes only the theme/language selection and records the previous selection; retain the old themes for rollback. Do not overwrite settings.db or reuse a whole-PBX installer for this operation.
-5. Open a draft PR with the actual diff, source commit, tested environment information when available, and this proposal. The standalone theme repository is not a fork of framework, so its language branches cannot directly serve as upstream PR heads.
+1. در فورک [voipiran/VOIZ](https://github.com/voipiran/VOIZ) فقط مسیرهای پوسته و سورس آن را منتقل کنید.
+2. در مرحلهٔ `add_vitenant_theme()` نصب‌کنندهٔ VOIZ، کپی و انتخاب vitenant را با استقرار و انتخاب akzfa، پشتیبان فایل‌ها و ثبت انتخاب قبلی تطبیق دهید؛ سایر مراحل نصب تغییر نکنند. tenant برای بازگشت باقی بماند.
+3. برای ارتقای ظاهر یک سرور موجود، از نصب‌کنندهٔ مستقل شاخهٔ fa استفاده کنید؛ نصب‌کنندهٔ کامل VOIZ را صرفاً برای تغییر پوسته دوباره اجرا نکنید.
+4. اگر نگه‌دارندگان نام پوشهٔ vitenant را لازم می‌دانند، مسیر فایل‌ها و انتخاب پوسته را با هم تطبیق دهند؛ تغییر سراسری نام کلاس‌ها می‌تواند دوباره ارتباط با قالب‌های ماژول‌ها را قطع کند. انتساب‌های اصلی و برند مورد تأیید پروژه حفظ شوند.
 
-## Security and data boundaries
+## مرزهای امنیت و داده
 
-The standalone installer stages and backs up managed theme files, uses one lock for both editions, rejects unsafe paths, and updates only theme/language through a guarded SQLite transaction. Recovery preserves later administrative selections. Theme files and recovery records remain after deactivation so either edition can still be restored. Filesystem deployment and database changes are not a crash-atomic transaction. RPM integration should follow the framework's own ownership and packaging conventions.
+نصب‌کنندهٔ مستقل از قفل مشترک، مسیرهای کنترل‌شده، فایل‌های root-owned، پشتیبان خصوصی و تراکنش SQLite با کنترل تغییر هم‌زمان استفاده می‌کند. فقط theme و language تغییر می‌کنند. زمان فایل‌های همین پوسته هنگام استقرار تازه می‌شود؛ کش مشترک و نشست‌ها پاک نمی‌شوند. backend وب‌فون قدیمی که به کوکی کاربر برای بازیابی اطلاعات SIP تکیه داشت، همراه پوسته توزیع نمی‌شود. برنامهٔ تلفنی مستقل تحت مدیریت خودش می‌ماند.
 
-There are no intended changes to dialplans, accounts, call records, SIP credentials, recordings, services, firewalls or database schemas. A UI contribution is not evidence of complete application security or standards compliance.
+فایل پایگاه داده، کاربران، داخلی‌ها، ضبط‌ها، dialplan، سرویس‌ها و دیوار آتش در محدودهٔ این تغییر نیستند. استقرار فایل و تغییر پایگاه داده یک تراکنش اتمی واحد نیستند؛ برای قطع برق یا SIGKILL تضمین بازیابی خودکار ادعا نمی‌شود.
 
-## Evidence and readiness
+## وضعیت آمادگی
 
-Source comparison and CSS generation were performed. **No tests were run for this revision**, as requested by the owner; no passing tests, measured accessibility scores or supported Issabel-version matrix are claimed. Before default adoption, the owner/maintainers need to supply results for login/logout and permissions, representative module forms and tables, calendar behavior, RTL/LTR layouts, keyboard operation, and installation/upgrade/recovery on their target release. These are pending acceptance criteria, not completed validation.
+هیچ آزمون مرورگر، نصب، خودکار یا سازگاری در این نوبت اجرا نشده است. قبل از تغییر پیش‌فرض، مالک و نگه‌دارندگان باید نتایج ورود/خروج، مجوز منوها، فرم‌ها و جدول‌ها، تقویم، قاب PBX و نصب/ارتقا/بازگردانی را روی انتشار مقصد ارائه کنند. این‌ها معیار پذیرشِ در انتظار هستند، نه نتایج انجام‌شده.
 
-Please review the directory names, release packaging, default-selection policy and migration timing.
-
-For VOIZ, see the [separate proposal](https://github.com/akzwp/akz_issable_theme/blob/main/proposals/02-voiz-upstream/PROPOSAL.md).
+متن انگلیسی تفصیلی برای نگه‌دارندگان در [پیشنهاد ایزابل](https://github.com/akzwp/akz_issable_theme/blob/main/proposals/01-issabel-framework/PROPOSAL.md) و [پیشنهاد VOIZ](https://github.com/akzwp/akz_issable_theme/blob/main/proposals/02-voiz-upstream/PROPOSAL.md) موجود است. این فایل متن پیشنهادی برای PR است؛ ارسال یا پذیرش بالادستی انجام نشده است.

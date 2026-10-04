@@ -1,8 +1,8 @@
 {
   "name": "issabel-akzfa-theme",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "private": true,
-  "description": "Persian right-to-left theme for the Issabel framework",
+  "description": "پوستهٔ فارسی و راست‌چین AKZ برای چارچوب ایزابل",
   "license": "GPL-2.0-or-later",
   "scripts": {
     "build:css": "tailwindcss -c tailwind.config.cjs -i ui/akzfa-theme.css -o ../../framework/html/themes/akzfa/css/akzfa-tailwind.css --minify"

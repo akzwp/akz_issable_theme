@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="fa">
+<html dir="rtl" lang="fa" data-akzfa-version="2.0.1">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="AKZ Persian interface for Issabel">
+        <meta name="description" content="پوستهٔ فارسی AKZ برای مدیریت ارتباطات ایزابل">
         <meta name="author" content="VOIPIRAN + AKZ" />
 
-        <title>Issabel · AKZ</title>
+        <title>ایزابل · پوستهٔ AKZ</title>
 
         <!-- AKZ: pre-paint theme init (avoids flash of wrong theme) -->
         <script type="text/javascript">
@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/neon-forms.css">
         <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/font-awesome-animation.min.css">
         <!-- AKZ: UI/UX layer (loaded last) -->
-        <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.0">
+        <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/akzfa-tailwind.css?v=2.0.1">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
@@ -100,7 +100,7 @@
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-api.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/jquery.validate.min.js"></script>
         <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-custom.js"></script>
-        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=2.0.0"></script>
+        <script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/akzfa-ui.js?v=2.0.1"></script>
 
         <!-- نمایش خطا -->
         <script type="text/javascript">
